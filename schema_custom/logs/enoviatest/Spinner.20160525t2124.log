@@ -1,0 +1,152 @@
+# [21:25:38] Type(s)
+
+# Add type FYPLM BBXHQD
+mql add type "FYPLM BBXHQD" abstract false nothidden sparse false
+mql mod type "FYPLM BBXHQD" add attribute "FYPLM Bid Management Report" add attribute "FYPLM Loading Position" add attribute "FYPLM Customer Name" add attribute "FYPLM Model Code" add attribute "FYPLM Customer Attribute" add attribute "FYPLM Motorcycle Type Name" add attribute "FYPLM Customer Loading Factory" add attribute "FYPLM Brand Type" add attribute "FYPLM Life Cycle Total Output" add attribute "FYPLM FY Store Name" add attribute "FYPLM Motorcycle Type Classification" add attribute "FYPLM Year Peak Value Yield" add attribute "FYPLM SOP Time" add attribute "FYPLM Vendor Grade" add attribute "FYPLM Market Price" add attribute "FYPLM Average Yearly Output" add attribute "FYPLM EOP Time" add attribute "FYPLM Design Type" add attribute "FYPLM Offer Round Number" add attribute "FYPLM Need Date" add attribute "FYPLM CLXHQD Yieldly" add attribute "FYPLM Data Freeze Time" add attribute "FYPLM Prototype Sample Time" add attribute "FYPLM OTS Time" add attribute "FYPLM JJGLBG Receive Time" add attribute "FYPLM Drawing Number" add attribute "FYPLM Drawing Date" add attribute "FYPLM CLXHQD Product Feature" add attribute "FYPLM Quotation Based" add attribute "FYPLM CLXHQD Remark" add attribute "FYPLM Product Special Requirements" add attribute "FYPLM Difficulty Grade" add attribute "FYPLM Glass Length" add attribute "FYPLM Installation Angle" add attribute "FYPLM Minimum Angle" add attribute "FYPLM Curve Radius" add attribute "FYPLM Glass Width" add attribute "FYPLM Biggest Spherical" add attribute "FYPLM Minimum Curvature Radius" add attribute "FYPLM Time Curve Radius" add attribute "FYPLM Glass Thickness" add attribute "FYPLM Pole Depth" add attribute "FYPLM Surface Curvature Gaussian" add attribute "FYPLM Holes Aperture" add attribute "FYPLM Medium High" add attribute "FYPLM Arch High" add attribute "FYPLM Minimum Chamfer Outside" add attribute "FYPLM Active Area" add attribute "FYPLM Glass Perimeter" add attribute "FYPLM Largest Chord Length" add attribute "FYPLM Minimum Chamfer Inside" add attribute "FYPLM Ink Printing Area" add attribute "FYPLM SP Printing Area" add attribute "FYPLM Remark Column" add attribute "FYPLM Craft Type" add attribute "FYPLM Processing Property Value" add attribute "FYPLM Injection Molding" add attribute "FYPLM CLXHQD Sales" add attribute "FYPLM Quotation Based Value" add attribute "FYPLM Product Life Cycle" add attribute "FYPLM Holes Num" add attribute "FYPLM Curvature State" add attribute "FYPLM Packing Type" add attribute "FYPLM Design Change Number" add attribute "FYPLM Export Country" add attribute "FYPLM Car Parent Type"
+mql escape mod type "FYPLM BBXHQD"  description "Edge-cladding consumable Material List Base Info"
+# Transaction successful.
+
+# Registration of type FYPLM BBXHQD
+mql add property "version" on type "FYPLM BBXHQD"  value "R417"
+mql add property "application" on type "FYPLM BBXHQD"  value "Framework"
+mql add property "original name" on type "FYPLM BBXHQD"  value "FYPLM BBXHQD"
+mql add property "installer" on type "FYPLM BBXHQD"  value "Dassault Systemes Services"
+mql add property "installed date" on type "FYPLM BBXHQD"  value "05-25-16"
+mql add property "type_FYPLMBBXHQD" on program "eServiceSchemaVariableMapping.tcl" to type "FYPLM BBXHQD" 
+# Registration successful.
+
+
+# [21:25:39] Relationship(s)
+
+# Add relationship FYPLM LP BBXHQD
+mql add relationship "FYPLM LP BBXHQD" nothidden preventduplicates sparse false from cardinality 1 revision none clone none notpropagatemodify to cardinality n revision none clone none notpropagatemodify
+mql mod relationship "FYPLM LP BBXHQD" from notpropagateconnection to notpropagateconnection
+mql mod relationship "FYPLM LP BBXHQD"  from add type "FYPLM Loading Position" 
+mql mod relationship "FYPLM LP BBXHQD"  to add type "FYPLM BBXHQD" 
+mql escape mod relationship "FYPLM LP BBXHQD"  description "FYPLM Loading Position BBCLQD relationship"
+# Transaction successful.
+
+# Registration of relationship FYPLM LP BBXHQD
+mql add property "version" on relationship "FYPLM LP BBXHQD"  value "R417"
+mql add property "application" on relationship "FYPLM LP BBXHQD"  value "Framework"
+mql add property "original name" on relationship "FYPLM LP BBXHQD"  value "FYPLM LP BBXHQD"
+mql add property "installer" on relationship "FYPLM LP BBXHQD"  value "Dassault Systemes Services"
+mql add property "installed date" on relationship "FYPLM LP BBXHQD"  value "05-25-16"
+mql add property "relationship_FYPLMLPBBXHQD" on program "eServiceSchemaVariableMapping.tcl" to relationship "FYPLM LP BBXHQD" 
+# Registration successful.
+
+
+# [21:25:39] Policy(s)
+
+# Add policy FYPLM BBXHQD
+mql escape add policy "FYPLM BBXHQD" sequence '00,01,02,...' nothidden notenforce
+mql mod policy "FYPLM BBXHQD"  add type "FYPLM BBXHQD" 
+mql mod policy "FYPLM BBXHQD"  add format "generic" 
+mql mod policy "FYPLM BBXHQD"  add state "Create"  add state "Review"  add state "Release"  add state "Cancel" 
+mql mod policy "FYPLM BBXHQD" defaultformat "generic"
+mql mod policy "FYPLM BBXHQD" store "STORE"
+mql mod policy "FYPLM BBXHQD" add allstate
+mql add property "state_Create" on policy "FYPLM BBXHQD" value "Create"
+mql add property "state_Review" on policy "FYPLM BBXHQD" value "Review"
+mql add property "state_Release" on policy "FYPLM BBXHQD" value "Release"
+mql add property "state_Cancel" on policy "FYPLM BBXHQD" value "Cancel"
+mql escape mod policy "FYPLM BBXHQD"  description ""
+# Transaction successful.
+
+# Registration of policy FYPLM BBXHQD
+mql add property "version" on policy "FYPLM BBXHQD"  value "R417"
+mql add property "application" on policy "FYPLM BBXHQD"  value "Framework"
+mql add property "original name" on policy "FYPLM BBXHQD"  value "FYPLM BBXHQD"
+mql add property "installer" on policy "FYPLM BBXHQD"  value "Dassault Systemes Services"
+mql add property "installed date" on policy "FYPLM BBXHQD"  value "05-25-16"
+mql add property "policy_FYPLMBBXHQD" on program "eServiceSchemaVariableMapping.tcl" to policy "FYPLM BBXHQD" 
+# Registration successful.
+
+
+# [21:25:40] State(s)
+
+# [21:25:40] Command(s)
+
+# Add command FYPLMMyBBCLXHQD
+mql add command "FYPLMMyBBCLXHQD" label "emxComponents.Command.FYPLMMyBBCLXHQD" Alt "emxComponents.Command.FYPLMMyBBCLXHQD" href "\$\{COMMON_DIR\}/emxTable.jsp?inquiry=FYPLMMyBBXHQD&table=FYPLMMyBBXHQDTable&toolbar=FYPLMMyClxhqdListToolBar&selection=multiple&sortColumnName=Name&sortDirection=ascending&header=emxComponents.Header.MyClxhqdList&submitAction=refreshCaller" nothidden 
+mql escape mod command "FYPLMMyBBCLXHQD" add setting "Registered Suite" 'Components'
+mql escape mod command "FYPLMMyBBCLXHQD" add setting "Target Location" 'content'
+mql escape mod command "FYPLMMyBBCLXHQD" code ''
+mql escape mod command "FYPLMMyBBCLXHQD"  description "My BBCLXHQD"
+# Transaction successful.
+
+# Registration of command FYPLMMyBBCLXHQD
+mql add property "version" on command "FYPLMMyBBCLXHQD"  value "R417"
+mql add property "application" on command "FYPLMMyBBCLXHQD"  value "Framework"
+mql add property "original name" on command "FYPLMMyBBCLXHQD"  value "FYPLMMyBBCLXHQD"
+mql add property "installer" on command "FYPLMMyBBCLXHQD"  value "Dassault Systemes Services"
+mql add property "installed date" on command "FYPLMMyBBCLXHQD"  value "05-25-16"
+mql add property "command_FYPLMMyBBCLXHQD" on program "eServiceSchemaVariableMapping.tcl" to command "FYPLMMyBBCLXHQD" 
+# Registration successful.
+
+
+# [21:25:40] Inquiry(s)
+
+# Add inquiry FYPLMMyBBXHQD
+mql escape add inquiry "FYPLMMyBBXHQD" pattern '*`*`*`\$\{OID\}' format '\$\{OID\}' nothidden
+mql mod inquiry FYPLMMyBBXHQD code "temp query bus "FYPLM BBXHQD" * * where 'owner==context.user' select id dump `"
+mql escape mod inquiry "FYPLMMyBBXHQD"  description "My BBXHQD"
+# Transaction successful.
+
+# Registration of inquiry FYPLMMyBBXHQD
+mql add property "version" on inquiry "FYPLMMyBBXHQD"  value "R417"
+mql add property "application" on inquiry "FYPLMMyBBXHQD"  value "Framework"
+mql add property "original name" on inquiry "FYPLMMyBBXHQD"  value "FYPLMMyBBXHQD"
+mql add property "installer" on inquiry "FYPLMMyBBXHQD"  value "Dassault Systemes Services"
+mql add property "installed date" on inquiry "FYPLMMyBBXHQD"  value "05-25-16"
+mql add property "inquiry_FYPLMMyBBXHQD" on program "eServiceSchemaVariableMapping.tcl" to inquiry "FYPLMMyBBXHQD" 
+# Registration successful.
+
+
+# [21:25:40] Table(s)
+
+# Add table FYPLMMyBBXHQDTable
+mql add table "FYPLMMyBBXHQDTable" system nothidden
+mql mod table "FYPLMMyBBXHQDTable" system column name "Name"  column name "Loading Position"  column name "Model Code" 
+mql escape mod table "FYPLMMyBBXHQDTable" system description "BB table in My view"
+# Transaction successful.
+
+# Registration of table FYPLMMyBBXHQDTable
+mql add property "version" on table "FYPLMMyBBXHQDTable" system value "R417"
+mql add property "application" on table "FYPLMMyBBXHQDTable" system value "Framework"
+mql add property "original name" on table "FYPLMMyBBXHQDTable" system value "FYPLMMyBBXHQDTable"
+mql add property "installer" on table "FYPLMMyBBXHQDTable" system value "Dassault Systemes Services"
+mql add property "installed date" on table "FYPLMMyBBXHQDTable" system value "05-25-16"
+mql add property "table_FYPLMMyBBXHQDTable" on program "eServiceSchemaVariableMapping.tcl" to table "FYPLMMyBBXHQDTable" system
+# Registration successful.
+
+
+# [21:25:40] Column(s)
+
+# Modify table FYPLMMyBBXHQDTable column Loading Position
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Loading Position" label "emxFramework.Attribute.FYPLM_Loading_Position"
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name "Loading Position" bus "\$<to\[relationship_FYPLMLPClxhqd\].from.evaluate\[attribute\[FYPLM Loading Position\].value\]>"
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name \"Loading Position\" add setting "Registered Suite" 'Framework'
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name \"Loading Position\" add setting "Admin Type" 'attribute_FYPLMLoadingPosition'
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Loading Position" remove user "all" 
+# Transaction successful.
+
+# Modify table FYPLMMyBBXHQDTable column Model Code
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Model Code" label "emxFramework.Attribute.FYPLM_Model_Code"
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name "Model Code" bus "\$<attribute\[attribute_FYPLMModelCode\].value>"
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name \"Model Code\" add setting "Registered Suite" 'Framework'
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Model Code" remove user "all" 
+# Transaction successful.
+
+# Modify table FYPLMMyBBXHQDTable column Name
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Name" label "emxFramework.Attribute.FYPLM_BBXHQD_Code"
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name "Name" bus "name"
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Name" href '\$\{COMMON_DIR\}/emxTree.jsp'
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name \"Name\" add setting "Registered Suite" 'Framework'
+mql escape mod table "FYPLMMyBBXHQDTable" system column mod name \"Name\" add setting "Field Type" 'basic'
+mql mod table "FYPLMMyBBXHQDTable" system column mod name "Name" remove user "all" 
+# Transaction successful.
+
+
+# [21:25:40] Portal(s)
+

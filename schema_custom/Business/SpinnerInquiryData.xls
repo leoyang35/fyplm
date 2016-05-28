@@ -1,0 +1,2 @@
+Inquiry Name	AEF Registry Name	Description	Pattern	Format	Arg Names (use | delim)	Arg Values (sync w/names)	Code	Hidden (true / false)	Icon File Name
+FYPLMMyBBXHQD	FYPLMMyBBXHQD	My BBXHQD	*`*`*`${OID}	${OID}			"temp query bus ""FYPLM BBXHQD"" * * where 'owner==context.user' select id dump `"	FALSE	

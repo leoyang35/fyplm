@@ -1,0 +1,2 @@
+Name	Registry Name	Description	"Column Names (in order-use ""|"" delim)"	Hidden (boolean)
+FYPLMMyBBXHQDTable	FYPLMMyBBXHQDTable	BB table in My view	Name | Loading Position | Model Code	FALSE
