@@ -1,5 +1,7 @@
 tcl;
 eval {
+	
+	#Add BBXHQD column in My Loading Position page
 	set strField [mql print table 'FYPLMMyBMRAndLPTable' system select column dump |]
     if { [string first "FYPLM BBXHQD Name" $strField] == -1 } {
 		mql mod table FYPLMMyBMRAndLPTable system column name "FYPLM BBXHQD Name"
