@@ -38,10 +38,6 @@
 	<script language="javascript" type="text/javascript" src="../components/emxComponentsJSFunctions.js"></script>
 	
 	<script type="text/javascript">
-		function alertExistingClxhqd(){
-			alert('<emxUtil:i18nScript localize="i18nId">emxEngineeringCentral.Message.ExistingClxhqd</emxUtil:i18nScript>');
-			top.close();
-		}
 		function alertSelectedOneLoadingPosition(){
 			alert('<emxUtil:i18nScript localize="i18nId">emxEngineeringCentral.Message.SelectedOneLoadingPosition</emxUtil:i18nScript>');
 			top.close();
@@ -61,42 +57,13 @@
         }
         objectId = (String) sSelectIds[0];
         
-        System.out.println("sObjectId111========"+objectId);
         if (objectId.indexOf("|") != -1) {
         	strList = FrameworkUtil.split(objectId, "|");
-        	//System.out.println("strList======="+strList);
         	objectId = (String) strList.get(0);
         }
-        DomainObject objLp = DomainObject.newInstance(context, objectId);
-        StringList slObj = new StringList();
-            slObj.addElement(DomainObject.SELECT_ID);
-            slObj.addElement(DomainObject.SELECT_TYPE);
-            slObj.addElement(DomainObject.SELECT_NAME);
- 
-            //logger.info("o is slObj ------------------" + slObj);
-            StringList slRel = new StringList();
-            slRel.addElement(DomainObject.SELECT_RELATIONSHIP_ID);
-            /**
-            MapList mapList = objLp.getRelatedObjects(context,
-            		"FYPLM LP Clxhqd",
-                    "FYPLM Clxhqd",
-                    slObj,
-                    slRel,
-                    false,
-                    true,
-                    (short)1,
-                    DomainObject.EMPTY_STRING,
-                    DomainObject.EMPTY_STRING,
-                    0);
-           //System.out.println("mapList======="+mapList.size());         
-           if(mapList!=null && mapList.size()>0){
-           	   out.println("<script>alertExistingClxhqd();</script>");
-               return;
-           }**/
-        
-        String url = request.getContextPath()+"/common/emxForm.jsp?objectId="+objectId+"&form=type_createBBXHQDByBMRAndLPForm&mode=edit&HelpMarker=emxhelpdocumenteditdetails&formHeader=emxComponents.Header.FYPLMCreateClxhqdByBMRAndLPForm&Export=False&findMxLink=false&submitAction=refreshCaller&suiteKey=Components&StringResourceFileId=emxComponentsStringResource&postProcessJPO=fyplmClxhqd:createClxhqdByBMRAndLPPostProcess";
+
+        String url = request.getContextPath()+"/common/emxCreate.jsp?objectId="+objectId+"&type=type_FYPLMBBXHQD&policy=policy_FYPLMBBXHQD&form=type_createBBXHQDByBMRAndLPForm&mode=edit&HelpMarker=emxhelpdocumenteditdetails&submitAction=refreshCaller&formHeader=emxComponents.Header.FYPLMCreateBBXHQDByBMRAndLPForm&Export=False&findMxLink=false&suiteKey=Components&StringResourceFileId=emxComponentsStringResource&nameField=autoname&showPolicy=false&relationship=relationship_FYPLMLPBBXHQD";
 		response.sendRedirect(url);
-        //System.out.println("objectId======="+objectId);
         
     } catch (Exception e) {
         logger.error("Excption: ", e);
