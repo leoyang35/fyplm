@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -90,31 +91,49 @@ public class fyplmBBXHQD_mxJPO extends Part{
    }
    
    public String getQuotationBasedRangeValues(Context context,String[] args) throws Exception{
-   	//getChoices context.getat
-   	String str = "";
-   	//StringBuffer sb = new StringBuffer();
+		String str = "";
 		try {
 			 logger.debug("Entering getQuotationBasedRangeValues");
-       	 String sLanguage = context.getSession().getLanguage();
+			 Map map = (Map) JPO.unpackArgs(args);
+			 Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
+			 
+			 String sPage = (String) mRequestMap.get("page");
+			 String[] qbv = null;
+			 
+			 if (sPage != null && "editdetails".equals(sPage)) {
+            	 String sBBXHQDId = (String) mRequestMap.get("parentOID");
+            	 if (sBBXHQDId != null && !"".equals(sBBXHQDId)) {
+            		 DomainObject objBBXHQD = DomainObject.newInstance(context, sBBXHQDId);
+            		 String sQuotBasedValue = objBBXHQD.getAttributeValue(context, "FYPLM Quotation Based Value");
+            		 if (sQuotBasedValue!=null && !"".equals(sQuotBasedValue)) {
+            			 qbv = sQuotBasedValue.split(",");
+            		 }
+            	 }
+			 }
+			 
+			 
+			 String sLanguage = context.getSession().getLanguage();
 	         AttributeType atrTaskConstraint = new AttributeType("FYPLM Quotation Based");
 	         atrTaskConstraint.open(context);
 	         StringList strList = atrTaskConstraint.getChoices(context);
 	         strList.sort();
 	         atrTaskConstraint.close(context);
-	         //System.out.println("strList==="+strList);
+
 	         str += "<table border=\"0\"><tbody>";
 	         for(int i=0; i<strList.size();i++){
 	             String key = (String)strList.get(i);
 	             String value = i18nNow.getRangeI18NString("FYPLM Quotation Based", key, sLanguage);
-	             //str += "<td height='20px' ><input type='checkbox' name='quotationBased"+(i+1)+"' value='"+key+"'/>"+value+"&nbsp;&nbsp;&nbsp;</td>";
-	             str += "<tr><td><input type=\"checkbox\" name=\"quotationBased";
+	             if (qbv != null && Arrays.asList(qbv).contains(key)) {
+	            	 str += "<tr><td><input type=\"checkbox\" checked=\"checked\" name=\"quotationBased";
+	             } else {
+	            	 str += "<tr><td><input type=\"checkbox\" name=\"quotationBased";
+	             }
 	             str += (i+1);
 	             str += "\" value=\"";
 	             str += key;
 	             str += "\"/></td><td>";
 	             str += value;
 	             str += "</td></tr>";
-	             
 	         } 			 
 	         str += "</tbody></table>";
 		} catch (Exception e) {
