@@ -29,7 +29,7 @@ import com.matrixone.apps.domain.util.MqlUtil;
 
 public class fyplmBBXHQD_mxJPO extends Part{
 	
-	//private static final String STRING_FYPLMExpression = "fyplmExpression";
+	private static final String STRING_FYPLMExpression = "fyplmExpression";
 	
     private Context context;
     private static Logger logger = Logger.getLogger(fyplmBBXHQD_mxJPO.class);
