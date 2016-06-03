@@ -1,2 +1,3 @@
 Inquiry Name	AEF Registry Name	Description	Pattern	Format	Arg Names (use | delim)	Arg Values (sync w/names)	Code	Hidden (true / false)	Icon File Name
 FYPLMMyBBXHQD	FYPLMMyBBXHQD	My BBXHQD	*`*`*`${OID}	${OID}			"temp query bus ""FYPLM BBXHQD"" * * where 'owner==context.user' select id dump `"	FALSE	
+FYPLMBBMaterial	FYPLMBBMaterial	FYPLM BB's class B Material	*`*`*`*`*`*`${OID}`${RELID}	${RELID}~${OID}	ID | REL_FYPLMBBXHQDClassBMaterialPart	objectId | relationship_FYPLMBBXHQDClassBMaterialPart	expand bus "${ID}" from rel "${REL_FYPLMBBXHQDClassBMaterialPart}" select bus id select rel id dump `	FALSE
