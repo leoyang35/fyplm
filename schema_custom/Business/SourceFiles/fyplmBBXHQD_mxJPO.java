@@ -27,7 +27,7 @@ import com.matrixone.apps.domain.util.MqlUtil;
 
 
 
-public class fyplmBBXHQD_mxJPO extends Part{
+public class fyplmBBXHQD_mxJPO extends DomainObject{
 	
 	private static final String STRING_FYPLMExpression = "fyplmExpression";
 	
@@ -36,6 +36,7 @@ public class fyplmBBXHQD_mxJPO extends Part{
     
     public static final String ABEGIN = "attribute[";
     public static final String AEND="]";
+    public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUasge");
     public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUasge");
     public static final String SELECT_ATTRIBUTE_FYPLM_NET_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_NET_USAGE).append(AEND).toString();
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TopPart = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
@@ -163,7 +164,7 @@ public class fyplmBBXHQD_mxJPO extends Part{
    }
    
     public MapList getDynamicPartsColumn(Context context, String[] args) throws Exception {
-    	logger.debug("entering JPO getDynamicPartsColumn.");
+    	logger.debug("entering JPO getDynamicPartsColumn for generate dynamic BOM table column");
         HashMap programMap = (HashMap) JPO.unpackArgs(args);
         MapList objectList = (MapList) programMap.get("objectList");
 
@@ -218,26 +219,36 @@ public class fyplmBBXHQD_mxJPO extends Part{
             colMap.put("topPartId", sPartId);
             colMap.put("settings", settingMap);
             colMap.put("name", sPartName);
-            colMap.put("label", "label");
+            colMap.put("label", sPartName + "净用量");
             columnMapList.add(colMap);
         }
         return columnMapList;
     }
     
-      public StringList getNetUsageColumn(Context context, String[] args) throws Exception{
-    	  StringList lsNetUsage = null;
+      public StringList getNetUsageColumn(Context context, String[] args) throws Exception {
+    	  StringList lsNetUsage = new StringList();
     	   HashMap programMap = (HashMap) JPO.unpackArgs(args);
            Map colMap = (HashMap) programMap.get("columnMap");
            String sPartId = (String) colMap.get("topPartId");
            MapList lsMaterials = (MapList) programMap.get("objectList");
-           String[] arrays = new String[lsMaterials.size()];
            for (int i = 0; i < lsMaterials.size(); i++) {
         	   Map mapMaterial = (Map) lsMaterials.get(i);
         	   String sMatId = (String) mapMaterial.get(SELECT_ID);
-        	   arrays[i] = sMatId;
+        	   DomainObject objMat = DomainObject.newInstance(context,sMatId);
+        	   String SNetUsage ="";
+        	   MapList mlNetUsages =
+        			   objMat.getRelatedObjects (context, 
+        			   RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART,
+        			   TYPE_FYPLM_BB_TOP_PART,null, 
+        			   new StringList(SELECT_ATTRIBUTE_FYPLM_NET_USAGE),
+        			   true, false, (short)1,  
+        			   new StringBuilder("id==").append(sPartId).toString(), 
+        			   null, 0);
+        	   if (mlNetUsages !=null && mlNetUsages.size()> 0) {
+        		   SNetUsage = (String)((Map)mlNetUsages.get(0)).get(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
+        	   }
+        	   lsNetUsage.add(SNetUsage);
            }
-           StringList select = new StringList("to["+RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART+"]." + SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
-           MapList mlNetUsages = DomainObject.getInfo(context, arrays, select);
            return lsNetUsage;
       }
    
