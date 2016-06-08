@@ -37,8 +37,11 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String ABEGIN = "attribute[";
     public static final String AEND="]";
     public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUasge");
-    public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUasge");
     public static final String SELECT_ATTRIBUTE_FYPLM_NET_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_NET_USAGE).append(AEND).toString();
+
+    public static final String ATTRIBUTE_FYPLM_GROSS_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMGrossUasge");
+    public static final String SELECT_ATTRIBUTE_FYPLM_GROSS_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_GROSS_USAGE).append(AEND).toString();
+
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TopPart = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
     public static final String RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBTopPartClassBMaterialPart");
     public static final String TYPE_FYPLM_BBXHQD = PropertyUtil.getSchemaProperty("type_FYPLMBBXHQD");
@@ -176,11 +179,9 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         DomainObject objBBXHQD = DomainObject.newInstance(context, objectId);
         StringList objSelect = new StringList();
         objSelect.addElement(SELECT_ID);
-        StringList relSelectList = new StringList();
-        relSelectList.addElement(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
         MapList topPartList = objBBXHQD.getRelatedObjects(context, RELATIONSHIP_FYPLM_BBXHQD_TopPart, 
         						TYPE_FYPLM_BB_TOP_PART, 
-                                        objSelect, relSelectList, 
+                                        objSelect, null, 
                                                         false, true, (short)1, null, null, 0);
         MapList columntMap = (MapList) programMap.get("columnMap");
         for (int i=0 ; i< topPartList.size(); i++){
@@ -193,7 +194,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             Map settingMap = new HashMap();
 
             settingMap.put("Admin Type", "attribute_FYPLMNetUasge");
-            settingMap.put("Column Type", "programHTMLOutput");// modifyed by)
+            settingMap.put("Column Type", "programHTMLOutput");
             // settingMap.put("Group Header", "emxProduct.Table.Selection");
 
             //settingMap.put("Registered Suite", "Configuration");)
@@ -215,12 +216,47 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                     //settingMap.put("Update Program", "cqacBOMProduct");
                     settingMap.put("Input Type", "textbox");
                     settingMap.put("Field Type", "attribute");
+                    settingMap.put("Group Header", sPartName);
             }
             colMap.put("topPartId", sPartId);
             colMap.put("settings", settingMap);
-            colMap.put("name", sPartName);
-            colMap.put("label", sPartName + "净用量");
+            colMap.put("name", sPartName+"_Net");
+            colMap.put("label", "净用量");
             columnMapList.add(colMap);
+
+        	Map colMap2 = new HashMap();
+            Map settingMap2 = new HashMap();
+
+            settingMap2.put("Admin Type", "attribute_FYPLMGrossUasge");
+            settingMap2.put("Column Type", "programHTMLOutput");
+            // settingMap.put("Group Header", "emxProduct.Table.Selection");
+
+            //settingMap.put("Registered Suite", "Configuration");)
+            settingMap2.put("function", "getGrossUsageColumn");
+            settingMap2.put("program", "fyplmBBXHQD");
+            //settingMap.put("Style Program", "cqacBOMProduct");)
+            //settingMap.put("Style Function", "getdynamicbackground");)
+            //settingMap.put("Column Style", "center-align");)
+            //settingMap.put("Width", customWidth);
+            //settingMap.put("Export", "true");)
+            if(modeStr==null || modeStr.isEmpty()) {
+                    settingMap2.put("Editable", "true");
+                    //settingMap.put("Edit Access Program", "cqacBOMProdu");
+                    //settingMap.put("Edit Access Function", "editacess");
+                    //settingMap.put("On Change Handler", "validatePELValue");
+                    //settingMap.put("Range Function","getRangeValuesForDynamicColumn");
+                    //settingMap.put("Range Program", "cqacBOMProduct");
+                    //settingMap.put("Update Function", "updateDynamicColumn");
+                    //settingMap.put("Update Program", "cqacBOMProduct");
+                    settingMap2.put("Input Type", "textbox");
+                    settingMap2.put("Field Type", "attribute");
+                    settingMap2.put("Group Header", sPartName);
+            }
+            colMap2.put("topPartId", sPartId);
+            colMap2.put("settings", settingMap2);
+            colMap2.put("name", sPartName+"_Gross");
+            colMap2.put("label", "毛用量");
+            columnMapList.add(colMap2);
         }
         return columnMapList;
     }
@@ -235,7 +271,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         	   Map mapMaterial = (Map) lsMaterials.get(i);
         	   String sMatId = (String) mapMaterial.get(SELECT_ID);
         	   DomainObject objMat = DomainObject.newInstance(context,sMatId);
-        	   String SNetUsage ="";
+        	   String sNetUsage ="";
         	   MapList mlNetUsages =
         			   objMat.getRelatedObjects (context, 
         			   RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART,
@@ -245,14 +281,40 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         			   new StringBuilder("id==").append(sPartId).toString(), 
         			   null, 0);
         	   if (mlNetUsages !=null && mlNetUsages.size()> 0) {
-        		   SNetUsage = (String)((Map)mlNetUsages.get(0)).get(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
+        		   sNetUsage = (String)((Map)mlNetUsages.get(0)).get(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
         	   }
-        	   lsNetUsage.add(SNetUsage);
+        	   lsNetUsage.add(sNetUsage);
            }
            return lsNetUsage;
       }
    
-
+      public StringList getGrossUsageColumn(Context context, String[] args) throws Exception {
+    	  StringList lsNetUsage = new StringList();
+    	   HashMap programMap = (HashMap) JPO.unpackArgs(args);
+           Map colMap = (HashMap) programMap.get("columnMap");
+           String sPartId = (String) colMap.get("topPartId");
+           MapList lsMaterials = (MapList) programMap.get("objectList");
+           for (int i = 0; i < lsMaterials.size(); i++) {
+        	   Map mapMaterial = (Map) lsMaterials.get(i);
+        	   String sMatId = (String) mapMaterial.get(SELECT_ID);
+        	   DomainObject objMat = DomainObject.newInstance(context,sMatId);
+        	   String sGrossUsage ="";
+        	   MapList mlNetUsages =
+        			   objMat.getRelatedObjects (context, 
+        			   RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART,
+        			   TYPE_FYPLM_BB_TOP_PART,null, 
+        			   new StringList(SELECT_ATTRIBUTE_FYPLM_GROSS_USAGE),
+        			   true, false, (short)1,  
+        			   new StringBuilder("id==").append(sPartId).toString(), 
+        			   null, 0);
+        	   if (mlNetUsages !=null && mlNetUsages.size()> 0) {
+        		   sGrossUsage = (String)((Map)mlNetUsages.get(0)).get(SELECT_ATTRIBUTE_FYPLM_GROSS_USAGE);
+        	   }
+        	   lsNetUsage.add(sGrossUsage);
+           }
+           return lsNetUsage;
+      }
+      
     public static void main(){
     	logger.debug(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
     }
