@@ -181,15 +181,19 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         objSelect.addElement(SELECT_ID);
         MapList topPartList = objBBXHQD.getRelatedObjects(context, RELATIONSHIP_FYPLM_BBXHQD_TopPart, 
         						TYPE_FYPLM_BB_TOP_PART, 
-                                        objSelect, null, 
+                                        objSelect, new StringList(SELECT_RELATIONSHIP_ID), 
                                                         false, true, (short)1, null, null, 0);
         MapList columntMap = (MapList) programMap.get("columnMap");
         for (int i=0 ; i< topPartList.size(); i++){
         	Map tmpMap = (Map)topPartList.get(i);
         	String sPartId = (String)tmpMap.get(SELECT_ID);
+        	String sRelId = (String)tmpMap.get(SELECT_RELATIONSHIP_ID);
         	DomainObject objPart = DomainObject.newInstance(context,sPartId);
         	String sPartName = objPart.getInfo(context, SELECT_NAME);
-
+        	
+        	String sHeader = new StringBuilder("<input type=\"radio\" name=\"emxTableRowId\" value=\"")
+        			.append(sRelId).append("|").append(sPartId).append("\" onclick=\"doRadioButtonClick(this);\">").append(sPartName).toString();
+        	
         	Map colMap = new HashMap();
             Map settingMap = new HashMap();
 
@@ -216,7 +220,8 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                     //settingMap.put("Update Program", "cqacBOMProduct");
                     settingMap.put("Input Type", "textbox");
                     settingMap.put("Field Type", "attribute");
-                    settingMap.put("Group Header", sPartName);
+                    settingMap.put("Group Header", sHeader);
+                    
             }
             colMap.put("topPartId", sPartId);
             colMap.put("settings", settingMap);
@@ -250,7 +255,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                     //settingMap.put("Update Program", "cqacBOMProduct");
                     settingMap2.put("Input Type", "textbox");
                     settingMap2.put("Field Type", "attribute");
-                    settingMap2.put("Group Header", sPartName);
+                    settingMap2.put("Group Header", sHeader);
             }
             colMap2.put("topPartId", sPartId);
             colMap2.put("settings", settingMap2);
