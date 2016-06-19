@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import matrix.db.AttributeType;
 import matrix.db.Context;
 import matrix.db.JPO;
+import matrix.db.RelationshipType;
 import matrix.util.MatrixException;
 import matrix.util.StringList;
 
@@ -36,10 +37,10 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     
     public static final String ABEGIN = "attribute[";
     public static final String AEND="]";
-    public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUasge");
+    public static final String ATTRIBUTE_FYPLM_NET_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMNetUsage");
     public static final String SELECT_ATTRIBUTE_FYPLM_NET_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_NET_USAGE).append(AEND).toString();
 
-    public static final String ATTRIBUTE_FYPLM_GROSS_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMGrossUasge");
+    public static final String ATTRIBUTE_FYPLM_GROSS_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMGrossUsage");
     public static final String SELECT_ATTRIBUTE_FYPLM_GROSS_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_GROSS_USAGE).append(AEND).toString();
 
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TopPart = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
@@ -197,7 +198,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         	Map colMap = new HashMap();
             Map settingMap = new HashMap();
 
-            settingMap.put("Admin Type", "attribute_FYPLMNetUasge");
+            settingMap.put("Admin Type", "attribute_FYPLMNetUsage");
             settingMap.put("Column Type", "programHTMLOutput");
             // settingMap.put("Group Header", "emxProduct.Table.Selection");
 
@@ -216,8 +217,8 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                     //settingMap.put("On Change Handler", "validatePELValue");
                     //settingMap.put("Range Function","getRangeValuesForDynamicColumn");
                     //settingMap.put("Range Program", "cqacBOMProduct");
-                    //settingMap.put("Update Function", "updateDynamicColumn");
-                    //settingMap.put("Update Program", "cqacBOMProduct");
+                    settingMap.put("Update Function", "updateNetUsage");
+                    settingMap.put("Update Program", "fyplmBBXHQD");
                     settingMap.put("Input Type", "textbox");
                     settingMap.put("Field Type", "attribute");
                     settingMap.put("Group Header", sHeader);
@@ -232,7 +233,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         	Map colMap2 = new HashMap();
             Map settingMap2 = new HashMap();
 
-            settingMap2.put("Admin Type", "attribute_FYPLMGrossUasge");
+            settingMap2.put("Admin Type", "attribute_FYPLMGrossUsage");
             settingMap2.put("Column Type", "programHTMLOutput");
             // settingMap.put("Group Header", "emxProduct.Table.Selection");
 
@@ -246,13 +247,13 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             //settingMap.put("Export", "true");)
             if(modeStr==null || modeStr.isEmpty()) {
                     settingMap2.put("Editable", "true");
-                    //settingMap.put("Edit Access Program", "cqacBOMProdu");
-                    //settingMap.put("Edit Access Function", "editacess");
-                    //settingMap.put("On Change Handler", "validatePELValue");
-                    //settingMap.put("Range Function","getRangeValuesForDynamicColumn");
-                    //settingMap.put("Range Program", "cqacBOMProduct");
-                    //settingMap.put("Update Function", "updateDynamicColumn");
-                    //settingMap.put("Update Program", "cqacBOMProduct");
+                    //settingMap2.put("Edit Access Program", "cqacBOMProdu");
+                    //settingMap2.put("Edit Access Function", "editacess");
+                    //settingMap2.put("On Change Handler", "validatePELValue");
+                    //settingMap2.put("Range Function","getRangeValuesForDynamicColumn");
+                    //settingMap2.put("Range Program", "cqacBOMProduct");
+                    settingMap2.put("Update Function", "updateGrossUsage");
+                    settingMap2.put("Update Program", "fyplmBBXHQD");
                     settingMap2.put("Input Type", "textbox");
                     settingMap2.put("Field Type", "attribute");
                     settingMap2.put("Group Header", sHeader);
@@ -264,6 +265,85 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             columnMapList.add(colMap2);
         }
         return columnMapList;
+    }
+    public Boolean updateGrossUsage(Context context, String[] args)
+            throws Exception {
+
+    	   HashMap programMap = (HashMap) JPO.unpackArgs(args);
+    	   HashMap paramMap = (HashMap) programMap.get("paramMap");
+           HashMap request = (HashMap) programMap.get("requestMap");
+
+            Map colMap = (HashMap) programMap.get("columnMap");
+            Map settings = (HashMap) colMap.get("settings");
+            
+            String strRelId = (String) paramMap.get("relId");
+            String topPartId = (String) colMap.get("topPartId");
+            String materialID = (String) paramMap.get("objectId");
+            
+            DomainObject objMat = DomainObject.newInstance(context,materialID);
+            
+            MapList mlNetUsages =
+     			   objMat.getRelatedObjects (context, 
+     			   RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART,
+     			   TYPE_FYPLM_BB_TOP_PART,null, 
+     			   new StringList(SELECT_RELATIONSHIP_ID),
+     			   true, false, (short)1,  
+     			   new StringBuilder("id==").append(topPartId).toString(), 
+     			   null, 0);
+           DomainRelationship rel = new DomainRelationship();
+           
+     	   if (mlNetUsages ==null || mlNetUsages.size()== 0) {
+     		  rel = objMat.addFromObject(context, 
+        			new RelationshipType(RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART), topPartId);
+     	   } else {
+     		   rel = new DomainRelationship((String)((Map)mlNetUsages.get(0)).get(SELECT_RELATIONSHIP_ID));
+     	   }
+     	   
+
+            String strUsageInput = (String) paramMap.get("New Value");
+            System.out.println("gross usage set to new value: " + strUsageInput);
+            rel.setAttributeValue(context, ATTRIBUTE_FYPLM_GROSS_USAGE, strUsageInput); 
+            return new Boolean(true);
+    }
+    
+    public Boolean updateNetUsage(Context context, String[] args)
+            throws Exception {
+
+    	   HashMap programMap = (HashMap) JPO.unpackArgs(args);
+    	   HashMap paramMap = (HashMap) programMap.get("paramMap");
+           HashMap request = (HashMap) programMap.get("requestMap");
+
+            Map colMap = (HashMap) programMap.get("columnMap");
+            Map settings = (HashMap) colMap.get("settings");
+            
+            String strRelId = (String) paramMap.get("relId");
+            String topPartId = (String) colMap.get("topPartId");
+            String materialID = (String) paramMap.get("objectId");
+            
+            DomainObject objMat = DomainObject.newInstance(context,materialID);
+            
+            MapList mlNetUsages =
+     			   objMat.getRelatedObjects (context, 
+     			   RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART,
+     			   TYPE_FYPLM_BB_TOP_PART,null, 
+     			   new StringList(SELECT_RELATIONSHIP_ID),
+     			   true, false, (short)1,  
+     			   new StringBuilder("id==").append(topPartId).toString(), 
+     			   null, 0);
+           DomainRelationship rel = new DomainRelationship();
+           
+     	   if (mlNetUsages ==null || mlNetUsages.size()== 0) {
+     		  rel = objMat.addFromObject(context, 
+        			new RelationshipType(RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART), topPartId);
+     	   } else {
+     		   rel = new DomainRelationship((String)((Map)mlNetUsages.get(0)).get(SELECT_RELATIONSHIP_ID));
+     	   }
+     	   
+
+            String strUsageInput = (String) paramMap.get("New Value");
+            System.out.println("net usage set to new value: " + strUsageInput);
+            rel.setAttributeValue(context, ATTRIBUTE_FYPLM_NET_USAGE, strUsageInput); 
+            return new Boolean(true);
     }
     
       public StringList getNetUsageColumn(Context context, String[] args) throws Exception {
