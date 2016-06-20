@@ -1,0 +1,3 @@
+Policy Name	State Name	Signature Name	Users for Approve (use "|" delim)	Users for Reject (use "|" delim)	Users for Ignore (use "|" delim)	Branch State	Filter
+FYPLM BBXHQD	Review	GoToCreate				Create	attribute[Branch To] == 'Reject'
+FYPLM BBXHQD	Review	GoToRelease				Release	attribute[Branch To] == 'None'

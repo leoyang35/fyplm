@@ -5,4 +5,5 @@ FYPLM Attachment Usage	FYPLM Attachment Usage	string	FYPLM Attachment Usage		 	F
 FYPLM BBXHQD Product Feature	FYPLM BBXHQD Product Feature	string	FYPLM BBXHQD Product Feature		= | = PVC Injection | = TRE Injection | = PU Extrusion | = Over Strip | = PU Bonding | = PU-Rim Injection | = EPDM Injection | = Two-shot Injection | = Other Injection	FALSE	FALSE		
 FYPLM BLCLXHQD	FYPLM BLCLXHQD	string	FYPLM BLCLXHQD		 	FALSE	FALSE		
 FYPLM Manufacturing Cost Code	FYPLM Manufacturing Cost Code	integer	FYPLM Manufacturing Cost Code		= | = 0 | = 1 | = 2	FALSE	FALSE		
+FYPLM BBXHQD Win	FYPLM BBXHQD Win	string	FYPLM BBXHQD Win	-	= - | = Yes	FALSE	FALSE		
 FYPLM Vendor Grade	FYPLM Vendor Grade	string	Vendor Grade	First Level Vendor	 = | = First Level Vendor | = Second Level Vendor	FALSE	FALSE		
