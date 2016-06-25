@@ -5,4 +5,4 @@ FYPLMBBXHQDRevisionListToolBar	FYPLMBBXHQDRevisionListToolBar					Image | Regist
 FYPLMBBXHQDRelevantDocumentToolBar	FYPLMBBXHQDRelevantDocumentToolBar		emxComponents.Common.Actions			Image | Registered Suite	${COMMON_DIR}/images/iconActionActions.png | Components	FYPLMBBXHQDRelevantDocumentCreateCommand | APPSeparator | FYPLMRelevantDocumentRemoveCommand		FALSE
 
 FYPLMBBXHQDPropertyToolbar	FYPLMBBXHQDPropertyToolbar					Image | Registered Suite	${COMMON_DIR}/images/iconActionActions.png | Components	FYPLMBBXHQDEditDetailsCommand		FALSE
-FYPLMBBXHQDBOMToolbar	FYPLMBBXHQDBOMToolbar					Image | Registered Suite	${COMMON_DIR}/images/iconActionActions.png | Components	FYPLMBBAddExistingBMaterial | FYPLMBMaterialRemove | FYPLMBBAddExistingPart | FYPLMEditUsage		FALSE
+FYPLMBBXHQDBOMToolbar	FYPLMBBXHQDBOMToolbar					Image | Registered Suite	${COMMON_DIR}/images/iconActionActions.png | Components	FYPLMBBAddExistingBMaterial | FYPLMBMaterialRemove | FYPLMTopPartCreate | FYPLMBBAddExistingPart | FYPLMEditUsage		FALSE

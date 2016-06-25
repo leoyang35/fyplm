@@ -1,6 +1,0 @@
-Policy Name	State Name	Revision (boolean)	Version (boolean)	Promote (boolean)	Checkout History (boolean)	"Users for Access (use ""|"" delim)"	"Notify Users (use ""|"" delim)"	Notify Message	Route User	Route Message	"Signatures (use ""|"" delim)"	Icon File
-FYPLM BBXHQD	Create	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Review	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Release	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Cancel	TRUE	TRUE	FALSE	TRUE							
-FYPLM BB Top Part	Exits	true	true	false	true							

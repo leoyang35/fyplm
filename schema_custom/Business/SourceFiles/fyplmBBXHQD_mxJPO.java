@@ -44,6 +44,9 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 
     public static final String ATTRIBUTE_FYPLM_GROSS_USAGE = PropertyUtil.getSchemaProperty("attribute_FYPLMGrossUsage");
     public static final String SELECT_ATTRIBUTE_FYPLM_GROSS_USAGE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_GROSS_USAGE).append(AEND).toString();
+    
+    public static final String ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = PropertyUtil.getSchemaProperty("attribute_FYPLMCustomerPartNumber");
+    public static final String SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER).append(AEND).toString();
 
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TopPart = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
     public static final String RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBTopPartClassBMaterialPart");
@@ -367,7 +370,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         	String sPartId = (String)tmpMap.get(SELECT_ID);
         	String sRelId = (String)tmpMap.get(SELECT_RELATIONSHIP_ID);
         	DomainObject objPart = DomainObject.newInstance(context,sPartId);
-        	String sPartName = objPart.getInfo(context, SELECT_NAME);
+        	String sPartName = objPart.getInfo(context, SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
         	
         	String sHeader = new StringBuilder("<input type=\"radio\" name=\"emxTableRowId\" value=\"")
         			.append(sRelId).append("|").append(sPartId).append("\" onclick=\"doRadioButtonClick(this);\">").append(sPartName).toString();
@@ -379,7 +382,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             settingMap.put("Column Type", "programHTMLOutput");
             // settingMap.put("Group Header", "emxProduct.Table.Selection");
 
-            //settingMap.put("Registered Suite", "Configuration");)
+            settingMap.put("Registered Suite", "Framework");
             settingMap.put("function", "getNetUsageColumn");
             settingMap.put("program", "fyplmBBXHQD");
             //settingMap.put("Style Program", "cqacBOMProduct");)
@@ -404,7 +407,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             colMap.put("topPartId", sPartId);
             colMap.put("settings", settingMap);
             colMap.put("name", sPartName+"_Net");
-            colMap.put("label", "净用量");
+            colMap.put("label", "emxFramework.Attribute.FYPLM_Net_Usage");
             columnMapList.add(colMap);
 
         	Map colMap2 = new HashMap();
@@ -412,16 +415,16 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 
             settingMap2.put("Admin Type", "attribute_FYPLMGrossUsage");
             settingMap2.put("Column Type", "programHTMLOutput");
-            // settingMap.put("Group Header", "emxProduct.Table.Selection");
+            // settingMap2.put("Group Header", "emxProduct.Table.Selection");
 
-            //settingMap.put("Registered Suite", "Configuration");)
+            settingMap2.put("Registered Suite", "Framework");
             settingMap2.put("function", "getGrossUsageColumn");
             settingMap2.put("program", "fyplmBBXHQD");
-            //settingMap.put("Style Program", "cqacBOMProduct");)
-            //settingMap.put("Style Function", "getdynamicbackground");)
-            //settingMap.put("Column Style", "center-align");)
-            //settingMap.put("Width", customWidth);
-            //settingMap.put("Export", "true");)
+            //settingMap2.put("Style Program", "cqacBOMProduct");)
+            //settingMap2.put("Style Function", "getdynamicbackground");)
+            //settingMap2.put("Column Style", "center-align");)
+            //settingMap2.put("Width", customWidth);
+            //settingMap2.put("Export", "true");)
             if(modeStr==null || modeStr.isEmpty()) {
                     settingMap2.put("Editable", "true");
                     //settingMap2.put("Edit Access Program", "cqacBOMProdu");
@@ -438,11 +441,26 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             colMap2.put("topPartId", sPartId);
             colMap2.put("settings", settingMap2);
             colMap2.put("name", sPartName+"_Gross");
-            colMap2.put("label", "毛用量");
+            colMap2.put("label", "emxFramework.Attribute.FYPLM_Gross_Usage");
             columnMapList.add(colMap2);
         }
         return columnMapList;
     }
+    
+    public void createTopPartPostProcess(Context context, String[] args) throws Exception{
+
+		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		HashMap requestMap = (HashMap) programMap.get("requestMap");
+		HashMap paramMap = (HashMap) programMap.get("paramMap");
+		String parentId = (String) requestMap.get("parentOID");
+		String sObjectId = (String) paramMap.get("objectId");
+
+		DomainObject objTempPart = DomainObject.newInstance(context,sObjectId);
+		objTempPart.addFromObject(context, 
+				new RelationshipType(RELATIONSHIP_FYPLM_BBXHQD_TopPart), parentId);
+    }
+    
+    
     public Boolean updateGrossUsage(Context context, String[] args)
             throws Exception {
 
