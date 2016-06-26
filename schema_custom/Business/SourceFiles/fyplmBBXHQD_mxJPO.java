@@ -58,84 +58,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     
     
     
-   public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
-	    logger.info("Entering getMembers()");
-	    MapList mlMembers = new MapList();
-	    try {
-	    	String sPersonId1 = PersonUtil.getPersonObjectID(context, (String)slUserName.get(0));
-	    	Map mPM1 = new HashMap();
-	    	mPM1.put(DomainConstants.SELECT_ID, sPersonId1);
-	    	mPM1.put("Route Instructions", "Review BBXHQD");
-	    	mPM1.put("Route Action", "Approve");
-	    	mPM1.put("Title", "Review BBXHQD");
-	    	mPM1.put("Allow Delegation", "True");
-	    	mPM1.put("Route Sequence", "1");
-	    	mPM1.put("Parallel Node Procession Rule", "All");
-	    	mlMembers.add(mPM1);
-	        MapList mlApproveLines = fyplmApprovalLine_mxJPO.getDirectManager(context, (String)slUserName.get(1), 1);
-	        int iSize = mlApproveLines.size();
-	        for (int i = 0; i < iSize; i++) {
-	            Map mApproveLine = (Map) mlApproveLines.get(i);
-	            String sPersonId = (String) mApproveLine.get(DomainConstants.SELECT_ID);
-	            //String sLevel = (String) mApproveLine.get(fyplmConstants_mxJPO.STRING_LEVEL);
-	            Map mPM = new HashMap();
-	            mPM.put(DomainConstants.SELECT_ID, sPersonId);
-	            mPM.put("Route Instructions", "Review BBXHQD");
-	            mPM.put("Route Action", "Approve");
-	            mPM.put("Title", "Review BBXHQD");
-	            mPM.put("Allow Delegation", "True");
-	            mPM.put("Route Sequence", String.valueOf(i+2));
-	            mPM.put("Parallel Node Procession Rule", "All");
-	            mlMembers.add(mPM);
-	        }
-	    } catch (FrameworkException e) {
-	        logger.error("There is an exception in getMembers(): ", e);
-	        throw e;
-	    }
-	    logger.info("Exiting getMembers()");
-	    return mlMembers;
-	}
-
-
-	public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
-        logger.info("Entering getMembers()");
-        MapList mlMembers = new MapList();
-        try {
-        	String sPersonId1 = PersonUtil.getPersonObjectID(context, (String)slUserName.get(0));
-        	Map mPM1 = new HashMap();
-        	mPM1.put(DomainConstants.SELECT_ID, sPersonId1);
-        	mPM1.put("Route Instructions", "Review BBXHQD");
-        	mPM1.put("Route Action", "Approve");
-        	mPM1.put("Title", "Review BBXHQD");
-        	mPM1.put("Allow Delegation", "True");
-        	mPM1.put("Route Sequence", "1");
-        	mPM1.put("Parallel Node Procession Rule", "All");
-        	mlMembers.add(mPM1);
-            MapList mlApproveLines = fyplmApprovalLine_mxJPO.getDirectManager(context, (String)slUserName.get(1), 1);
-            int iSize = mlApproveLines.size();
-            for (int i = 0; i < iSize; i++) {
-                Map mApproveLine = (Map) mlApproveLines.get(i);
-                String sPersonId = (String) mApproveLine.get(DomainConstants.SELECT_ID);
-                //String sLevel = (String) mApproveLine.get(fyplmConstants_mxJPO.STRING_LEVEL);
-                Map mPM = new HashMap();
-                mPM.put(DomainConstants.SELECT_ID, sPersonId);
-                mPM.put("Route Instructions", "Review BBXHQD");
-                mPM.put("Route Action", "Approve");
-                mPM.put("Title", "Review BBXHQD");
-                mPM.put("Allow Delegation", "True");
-                mPM.put("Route Sequence", String.valueOf(i+2));
-                mPM.put("Parallel Node Procession Rule", "All");
-                mlMembers.add(mPM);
-            }
-        } catch (FrameworkException e) {
-            logger.error("There is an exception in getMembers(): ", e);
-            throw e;
-        }
-        logger.info("Exiting getMembers()");
-        return mlMembers;
-    }
-
-	
    public MapList getDynamicPartsColumn(Context context, String[] args) throws Exception {
     	logger.debug("entering JPO getDynamicPartsColumn for generate dynamic BOM table column");
         HashMap programMap = (HashMap) JPO.unpackArgs(args);
@@ -654,6 +576,45 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 		System.out.println("objectId========="+clxhqdOldId);
 		
 		
+	}
+
+
+public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
+	    logger.info("Entering getMembers()");
+	    MapList mlMembers = new MapList();
+	    try {
+	    	String sPersonId1 = PersonUtil.getPersonObjectID(context, (String)slUserName.get(0));
+	    	Map mPM1 = new HashMap();
+	    	mPM1.put(DomainConstants.SELECT_ID, sPersonId1);
+	    	mPM1.put("Route Instructions", "Review BBXHQD");
+	    	mPM1.put("Route Action", "Approve");
+	    	mPM1.put("Title", "Review BBXHQD");
+	    	mPM1.put("Allow Delegation", "True");
+	    	mPM1.put("Route Sequence", "1");
+	    	mPM1.put("Parallel Node Procession Rule", "All");
+	    	mlMembers.add(mPM1);
+	        MapList mlApproveLines = fyplmApprovalLine_mxJPO.getDirectManager(context, (String)slUserName.get(1), 1);
+	        int iSize = mlApproveLines.size();
+	        for (int i = 0; i < iSize; i++) {
+	            Map mApproveLine = (Map) mlApproveLines.get(i);
+	            String sPersonId = (String) mApproveLine.get(DomainConstants.SELECT_ID);
+	            //String sLevel = (String) mApproveLine.get(fyplmConstants_mxJPO.STRING_LEVEL);
+	            Map mPM = new HashMap();
+	            mPM.put(DomainConstants.SELECT_ID, sPersonId);
+	            mPM.put("Route Instructions", "Review BBXHQD");
+	            mPM.put("Route Action", "Approve");
+	            mPM.put("Title", "Review BBXHQD");
+	            mPM.put("Allow Delegation", "True");
+	            mPM.put("Route Sequence", String.valueOf(i+2));
+	            mPM.put("Parallel Node Procession Rule", "All");
+	            mlMembers.add(mPM);
+	        }
+	    } catch (FrameworkException e) {
+	        logger.error("There is an exception in getMembers(): ", e);
+	        throw e;
+	    }
+	    logger.info("Exiting getMembers()");
+	    return mlMembers;
 	}
 
 
