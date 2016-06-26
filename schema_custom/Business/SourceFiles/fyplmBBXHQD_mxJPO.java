@@ -48,8 +48,10 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = PropertyUtil.getSchemaProperty("attribute_FYPLMCustomerPartNumber");
     public static final String SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER).append(AEND).toString();
 
-    public static final String RELATIONSHIP_FYPLM_BBXHQD_TopPart = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
+    public static final String RELATIONSHIP_FYPLM_BBXHQD_TOPPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
     public static final String RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBTopPartClassBMaterialPart");
+    public static final String RELATIONSHIP_FYPLM_BBXHQD_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDClassBMaterialPart");
+    
     public static final String TYPE_FYPLM_BBXHQD = PropertyUtil.getSchemaProperty("type_FYPLMBBXHQD");
     public static final String TYPE_FYPLM_BB_TOP_PART = PropertyUtil.getSchemaProperty("type_FYPLMBBTopPart");
     
@@ -360,7 +362,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         DomainObject objBBXHQD = DomainObject.newInstance(context, objectId);
         StringList objSelect = new StringList();
         objSelect.addElement(SELECT_ID);
-        MapList topPartList = objBBXHQD.getRelatedObjects(context, RELATIONSHIP_FYPLM_BBXHQD_TopPart, 
+        MapList topPartList = objBBXHQD.getRelatedObjects(context, RELATIONSHIP_FYPLM_BBXHQD_TOPPART, 
         						TYPE_FYPLM_BB_TOP_PART, 
                                         objSelect, new StringList(SELECT_RELATIONSHIP_ID), 
                                                         false, true, (short)1, null, null, 0);
@@ -457,7 +459,20 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 
 		DomainObject objTempPart = DomainObject.newInstance(context,sObjectId);
 		objTempPart.addFromObject(context, 
-				new RelationshipType(RELATIONSHIP_FYPLM_BBXHQD_TopPart), parentId);
+				new RelationshipType(RELATIONSHIP_FYPLM_BBXHQD_TOPPART), parentId);
+    }
+    
+    public void createTempPartPostProcess(Context context, String[] args) throws Exception{
+
+		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		HashMap requestMap = (HashMap) programMap.get("requestMap");
+		HashMap paramMap = (HashMap) programMap.get("paramMap");
+		String parentId = (String) requestMap.get("parentOID");
+		String sObjectId = (String) paramMap.get("objectId");
+
+		DomainObject objTempPart = DomainObject.newInstance(context,sObjectId);
+		objTempPart.addFromObject(context, 
+				new RelationshipType(RELATIONSHIP_FYPLM_BBXHQD_CLASSBMATERIALPART), parentId);
     }
     
     
