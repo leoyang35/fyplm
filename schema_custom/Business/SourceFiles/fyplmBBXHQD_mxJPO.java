@@ -58,188 +58,45 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     
     
     
-   public String getCreateBBXHQDFormValue(Context context, String[] args) throws Exception {
-       logger.info("Entering getBMRName().");
-       String sFieldValue = DomainConstants.EMPTY_STRING;
-       try {
-           Map map = (Map) JPO.unpackArgs(args);
-           Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
-           Map mFieldMap = (Map) map.get(fyplmConstants_mxJPO.STRING_FIELDMAP);
-           String sLPId = (String) mRequestMap.get(fyplmConstants_mxJPO.STRING_OBJECTID);
-           Map mSettings = (Map) mFieldMap.get(fyplmConstants_mxJPO.STRING_SETTINGS);
-           String sExpression = (String) mSettings.get(STRING_FYPLMExpression);
-//           logger.info("sLPId: " + sLPId);
-//           logger.info("sExpression: " + sExpression);
-           if (sLPId != null && !DomainConstants.EMPTY_STRING.equals(sLPId)) {
-               DomainObject objLP = DomainObject.newInstance(context, sLPId);
-               sFieldValue = objLP.getInfo(context, sExpression);
-//               sFieldValue = MqlUtil.mqlCommand(context,
-//                       "print bus " + sLPId
-//                               + " select " + sExpression + " dump");
-               StringBuffer appender = new StringBuffer("");
-               
-               //remove wrong char
-               if (sFieldValue == null) {
-            	   return DomainConstants.EMPTY_STRING;
-               }
-               
-               appender = new StringBuffer(sFieldValue.length());  
-               for (int i = 0; i < sFieldValue.length(); i++) {  
-                   char ch = sFieldValue.charAt(i);  
-                   if ((ch == 0x9) || (ch == 0xA) || (ch == 0xD)  
-                           || ((ch >= 0x20) && (ch <= 0xD7FF))  
-                           || ((ch >= 0xE000) && (ch <= 0xFFFD))  
-                           || ((ch >= 0x10000) && (ch <= 0x10FFFF)))  
-                       appender.append(ch);  
-               } 
-               sFieldValue = appender.toString();
-               //logger.info("sFieldValue: " + sFieldValue);
-           }
-           
-       } catch (Exception e) {
-           logger.error("There is an Exception in getBMRName(): ", e);
-           throw e;
-       }
-       logger.info("Exiting getCreateBBXHQDFormValue().");
-       return sFieldValue;
-   }
-   
-   
-   public MapList getBBXHQDRevisionList(Context context, String[] args) throws Exception {
-	    logger.info("Entering getBBXHQDRevisionList().");
-	    MapList mapList = new MapList();
-	    StringList slObj = new StringList();
-	    slObj.addElement(SELECT_ID);
-	    slObj.addElement(SELECT_NAME);
+   public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
+	    logger.info("Entering getMembers()");
+	    MapList mlMembers = new MapList();
 	    try {
-	    	HashMap programMap = (HashMap) JPO.unpackArgs(args);
-	    	String bbxhqdId = (String)programMap.get("parentOID");
-	    	DomainObject objBBXHQD = DomainObject.newInstance(context, bbxhqdId);
-	    	String sName = objBBXHQD.getInfo(context, SELECT_NAME);
-	    	String sWhere = "name=='" + sName + "'";
-	    	
-           mapList = findObjects(context,
-                   fyplmBBXHQDConstants_mxJPO.TYPE_FYPLM_BBXHQD,
-                   context.getVault().getName(),
-                   sWhere,
-                   slObj);
-           
-           mapList.sort("name", "descending", "String");
+	    	String sPersonId1 = PersonUtil.getPersonObjectID(context, (String)slUserName.get(0));
+	    	Map mPM1 = new HashMap();
+	    	mPM1.put(DomainConstants.SELECT_ID, sPersonId1);
+	    	mPM1.put("Route Instructions", "Review BBXHQD");
+	    	mPM1.put("Route Action", "Approve");
+	    	mPM1.put("Title", "Review BBXHQD");
+	    	mPM1.put("Allow Delegation", "True");
+	    	mPM1.put("Route Sequence", "1");
+	    	mPM1.put("Parallel Node Procession Rule", "All");
+	    	mlMembers.add(mPM1);
+	        MapList mlApproveLines = fyplmApprovalLine_mxJPO.getDirectManager(context, (String)slUserName.get(1), 1);
+	        int iSize = mlApproveLines.size();
+	        for (int i = 0; i < iSize; i++) {
+	            Map mApproveLine = (Map) mlApproveLines.get(i);
+	            String sPersonId = (String) mApproveLine.get(DomainConstants.SELECT_ID);
+	            //String sLevel = (String) mApproveLine.get(fyplmConstants_mxJPO.STRING_LEVEL);
+	            Map mPM = new HashMap();
+	            mPM.put(DomainConstants.SELECT_ID, sPersonId);
+	            mPM.put("Route Instructions", "Review BBXHQD");
+	            mPM.put("Route Action", "Approve");
+	            mPM.put("Title", "Review BBXHQD");
+	            mPM.put("Allow Delegation", "True");
+	            mPM.put("Route Sequence", String.valueOf(i+2));
+	            mPM.put("Parallel Node Procession Rule", "All");
+	            mlMembers.add(mPM);
+	        }
 	    } catch (FrameworkException e) {
-	        logger.error("There is an Exception in getBBXHQDRevisionList(): ", e);
+	        logger.error("There is an exception in getMembers(): ", e);
 	        throw e;
 	    }
-	    logger.info("Exiting getBBXHQDRevisionList().");
-	    return mapList;
-	}
-   
-   public void setBBXHQDWin(Context context, String[] args) throws Exception {
-	   StringList slObj = new StringList();
-       slObj.addElement(SELECT_ID);
-       slObj.addElement(SELECT_TYPE);
-       slObj.addElement(SELECT_NAME);
-
-       StringList slRel = new StringList();
-       slRel.addElement(SELECT_RELATIONSHIP_ID);
-       String bbxhqdId = args[0];
-		try {
-			logger.debug("Entering setBBXHQDWin");
-			
-			DomainObject objBBXHQD = DomainObject.newInstance(context, bbxhqdId);
-	    	String bbxqdName = objBBXHQD.getInfo(context, DomainObject.SELECT_NAME);
-	    	String sSelectedWin = objBBXHQD.getInfo(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN);
-           String sWhere = "name=='" + bbxqdName + "'";
-           
-           MapList mapList = findObjects(context,
-                   fyplmBBXHQDConstants_mxJPO.TYPE_FYPLM_BBXHQD,
-                   context.getVault().getName(),
-                   sWhere,
-                   slObj);
-           for (Iterator iter = mapList.iterator(); iter.hasNext();) {
-               Map map = (Map) iter.next();
-               String objCurrentId = (String)map.get(SELECT_ID);
-               DomainObject objCurrentBBXHQD = DomainObject.newInstance(context, objCurrentId);
-               String sCurrentWin = objCurrentBBXHQD.getInfo(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN);
-               
-               if ( objCurrentId.equals(bbxhqdId) && !"Yes".equals(sCurrentWin)) {
-            	   objCurrentBBXHQD.setAttributeValue(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN, "Yes");
-               } else {
-            	   objCurrentBBXHQD.setAttributeValue(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN, "-");
-               }
-           }
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		} finally {
-			logger.debug("Exiting setBBXHQDWin");
-		}
+	    logger.info("Exiting getMembers()");
+	    return mlMembers;
 	}
 
-   
-	public int triggerBBXHQDCreateAction(Context context, String[] args) throws Exception {
-        logger.info("Entering createClxhqd()");
-        int i = 0;
-        String bbxhqdId = args[0];
-        boolean blHasPush = false;
-        try {
-            String sCurrentUser = context.getUser();
-            DomainObject objBBXHQD = DomainObject.newInstance(context);
-            objBBXHQD.setId(bbxhqdId);
-            StringList slObj = new StringList();
-            slObj.addElement(SELECT_ID);
-            slObj.addElement(SELECT_TYPE);
-            slObj.addElement(SELECT_NAME);
- 
-            //logger.info("o is slObj ------------------" + slObj);
 
-	    	
-            ContextUtil.pushContext(context);
-            blHasPush = true;
-            fyplmRoute_mxJPO.setRouteLog(context, bbxhqdId, "state_Review");
-            
-            StringList strList = new StringList();
-//            String firstChecker = objClxhqd.getAttributeValue(context, "FYPLM Clxhqd First Checker");
-//            if(firstChecker==null || firstChecker.equals("")){
-//            	String message = i18nNow.getI18nString(
-//            			"emxEngineeringCentral.Message.NoClxhqdFirstChecker",
-//	                    "emxEngineeringCentralStringResource",
-//	                    context.getSession().getLanguage());
-//				throw new FrameworkException(message);
-//            }
-            strList.addElement(sCurrentUser);
-            System.out.println("firstChecker========="+sCurrentUser);
-            System.out.println("sCurrentUser========="+sCurrentUser);
-            strList.addElement(sCurrentUser);
-            MapList mlMembers = getMembers(context, objBBXHQD, strList);
-            System.out.println("mlMembers========="+mlMembers);
-            fyplmRoute_mxJPO.createRoute(context,
-                    mlMembers,
-                    bbxhqdId,
-                    "state_Review",
-                    "policy_FYPLMBBXHQD",
-                    "Review BBXHQD",
-                    sCurrentUser,
-                    "Promote Connected Object",
-                    "All");
-            fyplmRoute_mxJPO.startRoute(context, bbxhqdId, "state_Review");
-        } catch (Exception e) {
-            logger.error("There is an exception in triggerBBXHQDCreateAction(): ", e);
-            throw e;
-        } finally {
-            if (blHasPush) {
-                try {
-                    ContextUtil.popContext(context);
-                } catch (Exception e2) {
-                    logger.error("There is an exception in triggerBBXHQDCreateAction() pop: ", e2);
-                    throw e2;
-                }
-                
-            }
-        }
-        logger.info("Exiting triggerBBXHQDCreateAction()");
-        return i;
-    }
-	
 	public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
         logger.info("Entering getMembers()");
         MapList mlMembers = new MapList();
@@ -279,77 +136,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     }
 
 	
-   public String getQuotationBasedRangeValues(Context context,String[] args) throws Exception{
-		String str = "";
-		try {
-			 logger.debug("Entering getQuotationBasedRangeValues");
-			 Map map = (Map) JPO.unpackArgs(args);
-			 Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
-			 
-			 String sPage = (String) mRequestMap.get("page");
-			 String[] qbv = null;
-			 
-			 if (sPage != null && "editdetails".equals(sPage)) {
-            	 String sBBXHQDId = (String) mRequestMap.get("parentOID");
-            	 if (sBBXHQDId != null && !"".equals(sBBXHQDId)) {
-            		 DomainObject objBBXHQD = DomainObject.newInstance(context, sBBXHQDId);
-            		 String sQuotBasedValue = objBBXHQD.getAttributeValue(context, "FYPLM Quotation Based Value");
-            		 if (sQuotBasedValue!=null && !"".equals(sQuotBasedValue)) {
-            			 qbv = sQuotBasedValue.split(",");
-            		 }
-            	 }
-			 }
-			 
-			 
-			 String sLanguage = context.getSession().getLanguage();
-	         AttributeType atrTaskConstraint = new AttributeType("FYPLM Quotation Based");
-	         atrTaskConstraint.open(context);
-	         StringList strList = atrTaskConstraint.getChoices(context);
-	         strList.sort();
-	         atrTaskConstraint.close(context);
-
-	         str += "<table border=\"0\"><tbody>";
-	         for(int i=0; i<strList.size();i++){
-	             String key = (String)strList.get(i);
-	             String value = i18nNow.getRangeI18NString("FYPLM Quotation Based", key, sLanguage);
-	             if (qbv != null && Arrays.asList(qbv).contains(key)) {
-	            	 str += "<tr><td><input type=\"checkbox\" checked=\"checked\" name=\"quotationBased";
-	             } else {
-	            	 str += "<tr><td><input type=\"checkbox\" name=\"quotationBased";
-	             }
-	             str += (i+1);
-	             str += "\" value=\"";
-	             str += key;
-	             str += "\"/></td><td>";
-	             str += value;
-	             str += "</td></tr>";
-	         } 			 
-	         str += "</tbody></table>";
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		} finally {
-			logger.debug("Exiting getQuotationBasedRangeValues");
-		}
-       return str;
-   }
-   
-    public void copyCreateBBXHQDPostProcess(Context context, String[] args) throws Exception {
-    	//ContextUtil.startTransaction(context, true);
-		logger.debug("Entering copyCreateBBXHQDPostProcess");
-		HashMap programMap = (HashMap) JPO.unpackArgs(args);
-		//System.out.println("programMap========="+programMap);
-	    HashMap requestMap = (HashMap) programMap.get("requestMap");
-	   System.out.println("requestMap========="+requestMap);
-		HashMap paramMap = (HashMap) programMap.get("paramMap");
-		System.out.println("paramMap========="+paramMap);
-		String clxhqdOldId = (String) paramMap.get("objectId");
-		System.out.println("objectId========="+clxhqdOldId);
-		
-    	
-    }
-    
-    public MapList getDynamicPartsColumn(Context context, String[] args) throws Exception {
+   public MapList getDynamicPartsColumn(Context context, String[] args) throws Exception {
     	logger.debug("entering JPO getDynamicPartsColumn for generate dynamic BOM table column");
         HashMap programMap = (HashMap) JPO.unpackArgs(args);
         MapList objectList = (MapList) programMap.get("objectList");
@@ -614,7 +401,263 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     	logger.debug(SELECT_ATTRIBUTE_FYPLM_NET_USAGE);
     }
    
-   public void updateQuotationBasedField(Context context, String[] args) throws Exception {
+   public String getCreateBBXHQDFormValue(Context context, String[] args) throws Exception {
+	       logger.info("Entering getBMRName().");
+	       String sFieldValue = DomainConstants.EMPTY_STRING;
+	       try {
+	           Map map = (Map) JPO.unpackArgs(args);
+	           Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
+	           Map mFieldMap = (Map) map.get(fyplmConstants_mxJPO.STRING_FIELDMAP);
+	           String sLPId = (String) mRequestMap.get(fyplmConstants_mxJPO.STRING_OBJECTID);
+	           Map mSettings = (Map) mFieldMap.get(fyplmConstants_mxJPO.STRING_SETTINGS);
+	           String sExpression = (String) mSettings.get(STRING_FYPLMExpression);
+	//           logger.info("sLPId: " + sLPId);
+	//           logger.info("sExpression: " + sExpression);
+	           if (sLPId != null && !DomainConstants.EMPTY_STRING.equals(sLPId)) {
+	               DomainObject objLP = DomainObject.newInstance(context, sLPId);
+	               sFieldValue = objLP.getInfo(context, sExpression);
+	//               sFieldValue = MqlUtil.mqlCommand(context,
+	//                       "print bus " + sLPId
+	//                               + " select " + sExpression + " dump");
+	               StringBuffer appender = new StringBuffer("");
+	               
+	               //remove wrong char
+	               if (sFieldValue == null) {
+	            	   return DomainConstants.EMPTY_STRING;
+	               }
+	               
+	               appender = new StringBuffer(sFieldValue.length());  
+	               for (int i = 0; i < sFieldValue.length(); i++) {  
+	                   char ch = sFieldValue.charAt(i);  
+	                   if ((ch == 0x9) || (ch == 0xA) || (ch == 0xD)  
+	                           || ((ch >= 0x20) && (ch <= 0xD7FF))  
+	                           || ((ch >= 0xE000) && (ch <= 0xFFFD))  
+	                           || ((ch >= 0x10000) && (ch <= 0x10FFFF)))  
+	                       appender.append(ch);  
+	               } 
+	               sFieldValue = appender.toString();
+	               //logger.info("sFieldValue: " + sFieldValue);
+	           }
+	           
+	       } catch (Exception e) {
+	           logger.error("There is an Exception in getBMRName(): ", e);
+	           throw e;
+	       }
+	       logger.info("Exiting getCreateBBXHQDFormValue().");
+	       return sFieldValue;
+	   }
+
+
+	public MapList getBBXHQDRevisionList(Context context, String[] args) throws Exception {
+	    logger.info("Entering getBBXHQDRevisionList().");
+	    MapList mapList = new MapList();
+	    StringList slObj = new StringList();
+	    slObj.addElement(SELECT_ID);
+	    slObj.addElement(SELECT_NAME);
+	    try {
+	    	HashMap programMap = (HashMap) JPO.unpackArgs(args);
+	    	String bbxhqdId = (String)programMap.get("parentOID");
+	    	DomainObject objBBXHQD = DomainObject.newInstance(context, bbxhqdId);
+	    	String sName = objBBXHQD.getInfo(context, SELECT_NAME);
+	    	String sWhere = "name=='" + sName + "'";
+	    	
+	       mapList = findObjects(context,
+	               fyplmBBXHQDConstants_mxJPO.TYPE_FYPLM_BBXHQD,
+	               context.getVault().getName(),
+	               sWhere,
+	               slObj);
+	       
+	       mapList.sort("name", "descending", "String");
+	    } catch (FrameworkException e) {
+	        logger.error("There is an Exception in getBBXHQDRevisionList(): ", e);
+	        throw e;
+	    }
+	    logger.info("Exiting getBBXHQDRevisionList().");
+	    return mapList;
+	}
+
+
+	public void setBBXHQDWin(Context context, String[] args) throws Exception {
+	   StringList slObj = new StringList();
+	   slObj.addElement(SELECT_ID);
+	   slObj.addElement(SELECT_TYPE);
+	   slObj.addElement(SELECT_NAME);
+	
+	   StringList slRel = new StringList();
+	   slRel.addElement(SELECT_RELATIONSHIP_ID);
+	   String bbxhqdId = args[0];
+		try {
+			logger.debug("Entering setBBXHQDWin");
+			
+			DomainObject objBBXHQD = DomainObject.newInstance(context, bbxhqdId);
+	    	String bbxqdName = objBBXHQD.getInfo(context, DomainObject.SELECT_NAME);
+	    	String sSelectedWin = objBBXHQD.getInfo(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN);
+	       String sWhere = "name=='" + bbxqdName + "'";
+	       
+	       MapList mapList = findObjects(context,
+	               fyplmBBXHQDConstants_mxJPO.TYPE_FYPLM_BBXHQD,
+	               context.getVault().getName(),
+	               sWhere,
+	               slObj);
+	       for (Iterator iter = mapList.iterator(); iter.hasNext();) {
+	           Map map = (Map) iter.next();
+	           String objCurrentId = (String)map.get(SELECT_ID);
+	           DomainObject objCurrentBBXHQD = DomainObject.newInstance(context, objCurrentId);
+	           String sCurrentWin = objCurrentBBXHQD.getInfo(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN);
+	           
+	           if ( objCurrentId.equals(bbxhqdId) && !"Yes".equals(sCurrentWin)) {
+	        	   objCurrentBBXHQD.setAttributeValue(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN, "Yes");
+	           } else {
+	        	   objCurrentBBXHQD.setAttributeValue(context, fyplmBBXHQDConstants_mxJPO.ATTRIBUTE_FYPLM_BBXHQD_WIN, "-");
+	           }
+	       }
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		} finally {
+			logger.debug("Exiting setBBXHQDWin");
+		}
+	}
+
+
+	public int triggerBBXHQDCreateAction(Context context, String[] args) throws Exception {
+	        logger.info("Entering createClxhqd()");
+	        int i = 0;
+	        String bbxhqdId = args[0];
+	        boolean blHasPush = false;
+	        try {
+	            String sCurrentUser = context.getUser();
+	            DomainObject objBBXHQD = DomainObject.newInstance(context);
+	            objBBXHQD.setId(bbxhqdId);
+	            StringList slObj = new StringList();
+	            slObj.addElement(SELECT_ID);
+	            slObj.addElement(SELECT_TYPE);
+	            slObj.addElement(SELECT_NAME);
+	 
+	            //logger.info("o is slObj ------------------" + slObj);
+	
+		    	
+	            ContextUtil.pushContext(context);
+	            blHasPush = true;
+	            fyplmRoute_mxJPO.setRouteLog(context, bbxhqdId, "state_Review");
+	            
+	            StringList strList = new StringList();
+	//            String firstChecker = objClxhqd.getAttributeValue(context, "FYPLM Clxhqd First Checker");
+	//            if(firstChecker==null || firstChecker.equals("")){
+	//            	String message = i18nNow.getI18nString(
+	//            			"emxEngineeringCentral.Message.NoClxhqdFirstChecker",
+	//	                    "emxEngineeringCentralStringResource",
+	//	                    context.getSession().getLanguage());
+	//				throw new FrameworkException(message);
+	//            }
+	            strList.addElement(sCurrentUser);
+	            System.out.println("firstChecker========="+sCurrentUser);
+	            System.out.println("sCurrentUser========="+sCurrentUser);
+	            strList.addElement(sCurrentUser);
+	            MapList mlMembers = getMembers(context, objBBXHQD, strList);
+	            System.out.println("mlMembers========="+mlMembers);
+	            fyplmRoute_mxJPO.createRoute(context,
+	                    mlMembers,
+	                    bbxhqdId,
+	                    "state_Review",
+	                    "policy_FYPLMBBXHQD",
+	                    "Review BBXHQD",
+	                    sCurrentUser,
+	                    "Promote Connected Object",
+	                    "All");
+	            fyplmRoute_mxJPO.startRoute(context, bbxhqdId, "state_Review");
+	        } catch (Exception e) {
+	            logger.error("There is an exception in triggerBBXHQDCreateAction(): ", e);
+	            throw e;
+	        } finally {
+	            if (blHasPush) {
+	                try {
+	                    ContextUtil.popContext(context);
+	                } catch (Exception e2) {
+	                    logger.error("There is an exception in triggerBBXHQDCreateAction() pop: ", e2);
+	                    throw e2;
+	                }
+	                
+	            }
+	        }
+	        logger.info("Exiting triggerBBXHQDCreateAction()");
+	        return i;
+	    }
+
+
+	public String getQuotationBasedRangeValues(Context context,String[] args) throws Exception{
+			String str = "";
+			try {
+				 logger.debug("Entering getQuotationBasedRangeValues");
+				 Map map = (Map) JPO.unpackArgs(args);
+				 Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
+				 
+				 String sPage = (String) mRequestMap.get("page");
+				 String[] qbv = null;
+				 
+				 if (sPage != null && "editdetails".equals(sPage)) {
+	            	 String sBBXHQDId = (String) mRequestMap.get("parentOID");
+	            	 if (sBBXHQDId != null && !"".equals(sBBXHQDId)) {
+	            		 DomainObject objBBXHQD = DomainObject.newInstance(context, sBBXHQDId);
+	            		 String sQuotBasedValue = objBBXHQD.getAttributeValue(context, "FYPLM Quotation Based Value");
+	            		 if (sQuotBasedValue!=null && !"".equals(sQuotBasedValue)) {
+	            			 qbv = sQuotBasedValue.split(",");
+	            		 }
+	            	 }
+				 }
+				 
+				 
+				 String sLanguage = context.getSession().getLanguage();
+		         AttributeType atrTaskConstraint = new AttributeType("FYPLM Quotation Based");
+		         atrTaskConstraint.open(context);
+		         StringList strList = atrTaskConstraint.getChoices(context);
+		         strList.sort();
+		         atrTaskConstraint.close(context);
+	
+		         str += "<table border=\"0\"><tbody>";
+		         for(int i=0; i<strList.size();i++){
+		             String key = (String)strList.get(i);
+		             String value = i18nNow.getRangeI18NString("FYPLM Quotation Based", key, sLanguage);
+		             if (qbv != null && Arrays.asList(qbv).contains(key)) {
+		            	 str += "<tr><td><input type=\"checkbox\" checked=\"checked\" name=\"quotationBased";
+		             } else {
+		            	 str += "<tr><td><input type=\"checkbox\" name=\"quotationBased";
+		             }
+		             str += (i+1);
+		             str += "\" value=\"";
+		             str += key;
+		             str += "\"/></td><td>";
+		             str += value;
+		             str += "</td></tr>";
+		         } 			 
+		         str += "</tbody></table>";
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				throw e;
+			} finally {
+				logger.debug("Exiting getQuotationBasedRangeValues");
+			}
+	       return str;
+	   }
+
+
+	public void copyCreateBBXHQDPostProcess(Context context, String[] args) throws Exception {
+		//ContextUtil.startTransaction(context, true);
+		logger.debug("Entering copyCreateBBXHQDPostProcess");
+		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		//System.out.println("programMap========="+programMap);
+	    HashMap requestMap = (HashMap) programMap.get("requestMap");
+	   System.out.println("requestMap========="+requestMap);
+		HashMap paramMap = (HashMap) programMap.get("paramMap");
+		System.out.println("paramMap========="+paramMap);
+		String clxhqdOldId = (String) paramMap.get("objectId");
+		System.out.println("objectId========="+clxhqdOldId);
+		
+		
+	}
+
+
+public void updateQuotationBasedField(Context context, String[] args) throws Exception {
 		try {
 			logger.debug("Entering updateQuotationBasedValue");
 			HashMap programMap = (HashMap) JPO.unpackArgs(args);

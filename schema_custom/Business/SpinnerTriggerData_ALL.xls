@@ -1,3 +1,5 @@
 Schema Type	Schema Name	State (for Policy)	Trigger Event	Trigger Type (check / override / action)	Program	Input
+
+
 policy	FYPLM BBXHQD	Create	promote	action	emxTriggerManager	PolicyFYPLMBBXHQDStateCreatePromoteAction
 policy	FYPLM BBXHQD	Review	promote	action	emxTriggerManager	PolicyFYPLMBBXHQDStateReviewPromoteAction

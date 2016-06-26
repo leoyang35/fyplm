@@ -1,3 +1,4 @@
 Name	Registry Name	Description	Label	Href	Alt	Setting Name (use "|" delim)	Setting Value (use "|" delim)	Commands (use "|" delim)	Height	Hidden (boolean)	Icon File
 FYPLMBBXHQDRouteChannel	FYPLMBBXHQDRouteChannel					Registered Suite	Components	FYPLMTechnologicalProcessCommand	800	FALSE
+
 FYPLMBBXHQDBOMChannel	FYPLMBBXHQDBOMChannel					Registered Suite	Components	FYPLMBBXHQDBOMCommand	800	FALSE

@@ -1,2 +1,4 @@
 Name	Registry Name	Description	Label	Href	Alt	Setting Name (use "|" delim)	Setting Value (use "|" delim)	Channels (use "," w/ "|" delims)	Hidden (boolean)	Icon File
+
+
 FYPLMBBBOMRoutePortal	FYPLMBBBOMRoutePortal	FYPLM BB BOM RoutePortal				Registered Suite	Components	FYPLMBBXHQDBOMChannel | FYPLMBBXHQDRouteChannel	FALSE

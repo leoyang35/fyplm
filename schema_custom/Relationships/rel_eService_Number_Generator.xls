@@ -1,4 +1,5 @@
 FromType	FromName	FromRev	ToType	ToName	ToRev	Direction	Relationship
-eService Object Generator	type_FYPLMBBXHQD		eService Number Generator	type_FYPLMBBXHQD		to	eService Number Generator
 eService Object Generator	type_FYPLMBBTopPart		eService Number Generator	type_FYPLMBBTopPart		to	eService Number Generator
 eService Object Generator	type_FYPLMBBTempPart		eService Number Generator	type_FYPLMBBTempPart		to	eService Number Generator
+
+eService Object Generator	type_FYPLMBBXHQD		eService Number Generator	type_FYPLMBBXHQD		to	eService Number Generator
