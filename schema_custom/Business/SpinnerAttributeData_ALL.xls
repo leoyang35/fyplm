@@ -6,4 +6,29 @@ FYPLM BBXHQD Product Feature	FYPLM BBXHQD Product Feature	string	FYPLM BBXHQD Pr
 FYPLM BLCLXHQD	FYPLM BLCLXHQD	string	FYPLM BLCLXHQD		 	FALSE	FALSE		
 FYPLM Manufacturing Cost Code	FYPLM Manufacturing Cost Code	integer	FYPLM Manufacturing Cost Code		= | = 0 | = 1 | = 2	FALSE	FALSE		
 FYPLM BBXHQD Win	FYPLM BBXHQD Win	string	FYPLM BBXHQD Win	-	= - | = Yes	FALSE	FALSE		
+FYPLM BBXHQD Length	FYPLM BBXHQD Length	string	FYPLM BBXHQD Length		 	FALSE	FALSE		
+FYPLM BBXHQD Assembly Alignment Tolerance	FYPLM BBXHQD Assembly Alignment Tolerance	string	FYPLM BBXHQD Assembly Alignment Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Tongue Size Tolerance	FYPLM BBXHQD Tongue Size Tolerance	string	FYPLM BBXHQD Tongue Size Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Attachment Assembly Tolerance	FYPLM BBXHQD Attachment Assembly Tolerance	string	FYPLM BBXHQD Attachment Assembly Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Width	FYPLM BBXHQD Width	string	FYPLM BBXHQD Width		 	FALSE	FALSE		
+FYPLM BBXHQD Light alignment	FYPLM BBXHQD Light alignment	string	FYPLM BBXHQD Light alignment		 	FALSE	FALSE		
+FYPLM BBXHQD Size Position	FYPLM BBXHQD Size Position	string	FYPLM BBXHQD Size Position		 	FALSE	FALSE		
+FYPLM BBXHQD Gap Position Tolerance	FYPLM BBXHQD Gap Position Tolerance	string	FYPLM BBXHQD Gap Position Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Height	FYPLM BBXHQD Height	string	FYPLM BBXHQD Height		 	FALSE	FALSE		
+FYPLM BBXHQD End Alignment	FYPLM BBXHQD End Alignment	string	FYPLM BBXHQD End Alignment		 	FALSE	FALSE		
+FYPLM BBXHQD Size Profile	FYPLM BBXHQD Size Profile	string	FYPLM BBXHQD Size Profile		 	FALSE	FALSE		
+FYPLM BBXHQD Profile Tolerance	FYPLM BBXHQD Profile Tolerance	string	FYPLM BBXHQD Profile Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Perimeter	FYPLM BBXHQD Perimeter	string	FYPLM BBXHQD Perimeter		 	FALSE	FALSE		
+FYPLM BBXHQD Angle of Installation	FYPLM BBXHQD Angle of Installation	string	FYPLM BBXHQD Angle of Installation		 	FALSE	FALSE		
+FYPLM BBXHQD Surface Tolerance	FYPLM BBXHQD Surface Tolerance	string	FYPLM BBXHQD Surface Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Assembly Requirement	FYPLM BBXHQD Assembly Requirement	string	FYPLM BBXHQD Assembly Requirement		 	FALSE	FALSE		
+FYPLM BBXHQD Surface Position	FYPLM BBXHQD Surface Position	string	FYPLM BBXHQD Surface Position		 	FALSE	FALSE		
+FYPLM BBXHQD Printing	FYPLM BBXHQD Printing	string	FYPLM BBXHQD Printing		 	FALSE	FALSE		
+FYPLM BBXHQD Logo Position	FYPLM BBXHQD Logo Position	string	FYPLM BBXHQD Logo Position		 	FALSE	FALSE		
+FYPLM BBXHQD Other	FYPLM BBXHQD Other	string	FYPLM BBXHQD Other		 	FALSE	FALSE		
+FYPLM BBXHQD Surface Profile	FYPLM BBXHQD Surface Profile	string	FYPLM BBXHQD Surface Profile		 	FALSE	FALSE		
+FYPLM BBXHQD Center of Spherical Tolerance	FYPLM BBXHQD Center of Spherical Tolerance	string	FYPLM BBXHQD Center of Spherical Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Printing Position Tolerance	FYPLM BBXHQD Printing Position Tolerance	string	FYPLM BBXHQD Printing Position Tolerance		 	FALSE	FALSE		
+FYPLM BBXHQD Printing White Trim Requirement	FYPLM BBXHQD Printing White Trim Requirement	string	FYPLM BBXHQD Printing White Trim Requirement		 	FALSE	FALSE		
+FYPLM BBXHQD Covered Edge Glass Requirement	FYPLM BBXHQD Covered Edge Glass Requirement	string	FYPLM BBXHQD Covered Edge Glass Requirement		 	FALSE	FALSE		
 FYPLM Vendor Grade	FYPLM Vendor Grade	string	Vendor Grade	First Level Vendor	 = | = First Level Vendor | = Second Level Vendor	FALSE	FALSE		

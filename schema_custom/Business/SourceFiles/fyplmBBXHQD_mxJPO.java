@@ -635,6 +635,11 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 				}
 			}
 			
+			if ("".equals(attrQuotBasedValue)) {
+            	String message = i18nNow.getI18nString("emxFramework.Message.InputQuotationBased","emxFrameworkStringResource",context.getSession().getLanguage());
+				throw new MatrixException(message);
+			}
+			
 			String objectId = (String) paramMap.get(fyplmConstants_mxJPO.STRING_OBJECTID);
 			DomainObject objBBXHQD = DomainObject.newInstance(context, objectId);
 			objBBXHQD.setAttributeValue(context, "FYPLM Quotation Based Value", attrQuotBasedValue);
