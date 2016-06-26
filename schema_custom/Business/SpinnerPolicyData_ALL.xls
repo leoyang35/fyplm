@@ -1,4 +1,5 @@
 Name	Registry Name	Description	Rev Sequence (use 'continue' for '...')	Store	Hidden (boolean)	"Types (use ""|"" delim)"	"Formats (use ""|"" delim)"	Default Format	Locking (boolean)	"State Names (in order-use ""|"" delim)"	"State Registry Names (in order-use ""|"" delim)"	Allstate (boolean)	Icon file
+FYPLM BB Temp Part	FYPLM BB Temp Part	FYPLM Baobian Temp Part Policy	00,01,02,continue	STORE	FALSE	FYPLM BB Temp Part	generic	generic	FALSE	Create | Release | Obsolete	Create | Release | Obsolete	FALSE
 FYPLM BB Top Part	FYPLM BB Top Part	FYPLM Baobian Top Part Policy	00,01,02,continue	STORE	FALSE	FYPLM BB Top Part	generic	generic	FALSE	Exits	Exits	FALSE
 
 FYPLM BBXHQD	FYPLM BBXHQD		"00,01,02,continue"	STORE	FALSE	FYPLM BBXHQD	generic	generic	FALSE	Create | Review | Release | Cancel	Create | Review | Release | Cancel	TRUE	
