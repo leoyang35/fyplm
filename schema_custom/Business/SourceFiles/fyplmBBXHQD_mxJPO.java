@@ -56,7 +56,35 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String TYPE_FYPLM_BB_TOP_PART = PropertyUtil.getSchemaProperty("type_FYPLMBBTopPart");
     
     
-    
+    @com.matrixone.apps.framework.ui.ExcludeOIDProgramCallable
+    public StringList excludeConnected(Context context, String[] args) throws Exception {
+    	StringList excludeList= new StringList();
+        Map programMap = (Map) JPO.unpackArgs(args);
+        String strOId = (String)programMap.get("objectId");
+        String strRel=(String)programMap.get("relName");
+        DomainObject obj = DomainObject.newInstance(context,strOId);
+        String sRelName = PropertyUtil.getSchemaProperty(context,strRel);
+        System.out.println(strOId);
+        System.out.println(sRelName);
+        MapList childObjects=obj.getRelatedObjects(context,
+        		sRelName,
+                "*",
+                new StringList(DomainConstants.SELECT_ID),
+                null,
+                true,
+                true,
+               (short) 1,
+                DomainConstants.EMPTY_STRING,
+                DomainConstants.EMPTY_STRING,
+                0);
+        System.out.println(childObjects.size());
+        for(int i=0;i<childObjects.size();i++){
+            Map tempMap=(Map)childObjects.get(i);
+            excludeList.add(tempMap.get(DomainConstants.SELECT_ID));
+        }
+        System.out.println(" excludeList " + excludeList);
+        return excludeList;
+    }
     
    public MapList getDynamicPartsColumn(Context context, String[] args) throws Exception {
     	logger.debug("entering JPO getDynamicPartsColumn for generate dynamic BOM table column");

@@ -1,4 +1,5 @@
 Attribute Name	Registry Name	Type	Description	Default	Ranges (use "|" delim)	Multiline (boolean)	Hidden (boolean)	Dimension	Icon File
+FYPLM Price Term	FYPLM Price Term	string	FYPLM Price Term		 	FALSE	FALSE
 FYPLM Net Usage	FYPLM Net Usage	real	FYPLM Net Usage		 	FALSE	FALSE	
 FYPLM Gross Usage	FYPLM Gross Usage	real	FYPLM Net Usage		 	FALSE	FALSE
 
