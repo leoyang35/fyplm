@@ -3,3 +3,4 @@ eService Object Generator	type_FYPLMBBTopPart		eService Number Generator	type_FY
 eService Object Generator	type_FYPLMBBTempPart		eService Number Generator	type_FYPLMBBTempPart		to	eService Number Generator
 
 eService Object Generator	type_FYPLMBBXHQD		eService Number Generator	type_FYPLMBBXHQD		to	eService Number Generator
+eService Object Generator	type_FYPLMBBProductPackaging		eService Number Generator	type_FYPLMBBProductPackaging		to	eService Number Generator

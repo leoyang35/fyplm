@@ -4,4 +4,5 @@ FYPLM BBXHQD ClassBMaterialPart	FYPLM BBXHQD ClassBMaterialPart	FYPLM BBXHQD to 
 FYPLM BBXHQD TopPart	FYPLM BBXHQD TopPart	FYPLM BBXHQD to TopPart		FALSE	FALSE	TRUE	FYPLM BBXHQD		none	none	N	FALSE	FYPLM BB Top Part		none	none	N	FALSE	FALSE	FALSE
 
 FYPLM LP BBXHQD	FYPLM LP BBXHQD	FYPLM Loading Position BBCLQD relationship		FALSE	FALSE	TRUE	FYPLM Loading Position		none	none	One	FALSE	FYPLM BBXHQD		replicate	replicate	N	FALSE	FALSE	FALSE
-FYPLM BBXHQD Relevant Document	FYPLM BBXHQD Relevant Document	This relationship will be used to connect BBXHQD to Relevant Document Types		FALSE	FALSE	TRUE	FYPLM BBXHQD		none	none	N	FALSE	FYPLM Relevant Document		none	none	N	FALSE	FALSE	FALSE
+FYPLM BBXHQD Product Packaging	FYPLM BBXHQD Product Packaging	BBXHQD to Product Packaging		FALSE	FALSE	TRUE	FYPLM BBXHQD		none	none	N	FALSE	FYPLM BB Product Packaging		none	none	N	FALSE	FALSE	FALSE
+FYPLM BBXHQD Relevant Document	FYPLM BBXHQD Relevant Document	BBXHQD to Relevant Document		FALSE	FALSE	TRUE	FYPLM BBXHQD		none	none	N	FALSE	FYPLM Relevant Document		none	none	N	FALSE	FALSE	FALSE

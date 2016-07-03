@@ -352,7 +352,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     }
    
    public String getCreateBBXHQDFormValue(Context context, String[] args) throws Exception {
-	       logger.info("Entering getBMRName().");
+	       logger.info("Entering getCreateBBXHQDFormValue().");
 	       String sFieldValue = DomainConstants.EMPTY_STRING;
 	       try {
 	           Map map = (Map) JPO.unpackArgs(args);
@@ -370,7 +370,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	//                       "print bus " + sLPId
 	//                               + " select " + sExpression + " dump");
 	               StringBuffer appender = new StringBuffer("");
-	               
 	               //remove wrong char
 	               if (sFieldValue == null) {
 	            	   return DomainConstants.EMPTY_STRING;
@@ -390,7 +389,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	           }
 	           
 	       } catch (Exception e) {
-	           logger.error("There is an Exception in getBMRName(): ", e);
+	           logger.error("There is an Exception in getCreateBBXHQDFormValue(): ", e);
 	           throw e;
 	       }
 	       logger.info("Exiting getCreateBBXHQDFormValue().");
@@ -605,6 +604,81 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 		
 		
 	}
+
+	public String getBBPackingType(Context context,String[] args) throws Exception{
+    	//getChoices context.getat
+    	String packingType = "";
+		try {
+			 logger.debug("Entering getBBPackingType");
+	         Map map = (Map) JPO.unpackArgs(args);
+	         Map mRequestMap = (Map) map.get(fyplmConstants_mxJPO.STRING_REQUESTMAP);
+	         Map mFieldMap = (Map) map.get(fyplmConstants_mxJPO.STRING_FIELDMAP);
+	         String sBBXHQDId = (String) mRequestMap.get(fyplmConstants_mxJPO.STRING_OBJECTID);
+	         
+	         if (sBBXHQDId != null && !"".equals(sBBXHQDId)) {
+				 DomainObject objBBXHQD = DomainObject.newInstance(context, sBBXHQDId);
+				 String val = objBBXHQD.getInfo(context, "to[FYPLM LP BBXHQD].from.to[FYPLM LP BM].from.attribute[FYPLM Packing Type].value");
+				 String sLanguage = context.getSession().getLanguage();
+	             packingType = i18nNow.getRangeI18NString("FYPLM Packing Type", val, sLanguage);
+	         }
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		} finally {
+			logger.debug("Exiting getBBPackingType");
+		}
+        return packingType;
+    }
+	
+	public String getBBPackingTypeModel(Context context,String[] args) throws Exception{
+    	//getChoices context.getat
+    	String str = "";
+		try {
+			 logger.debug("Entering getBBPackingTypeModel");
+			 HashMap programMap = (HashMap) JPO.unpackArgs(args);
+			 //System.out.println("programMap=="+programMap);
+			 HashMap fieldMap = (HashMap) programMap.get("fieldMap");
+			 HashMap requestMap = (HashMap) programMap.get("requestMap");
+			 String attrName = (String) fieldMap.get("name");
+			 String sBBXHQDId = (String) requestMap.get("objectId");
+			 DomainObject objBBXHQD = DomainObject.newInstance(context, sBBXHQDId);
+			 String val = objBBXHQD.getInfo(context, "to[FYPLM LP BBXHQD].from.to[FYPLM LP BM].from.attribute[FYPLM Packing Type].value");
+			 if(val.equals(fyplmClxhqdConstants_mxJPO.Tx_Code)){
+				 str = "--";
+			 }else{
+				 String sLanguage = context.getSession().getLanguage();
+		         AttributeType atrTaskConstraint = new AttributeType(attrName);
+		         atrTaskConstraint.open(context);
+		         StringList strList = atrTaskConstraint.getChoices(context);
+		         strList.sort();
+		         atrTaskConstraint.close(context);
+		         //System.out.println("strList========"+strList);
+
+	        	 str += "<select name='"+attrName+"' id='"+attrName+"' >";
+	        	 //str += "<option value=''></option>";
+		         for(int i=0; i<strList.size();i++){
+		             String key = (String)strList.get(i);
+		             String value = i18nNow.getRangeI18NString(attrName, key, sLanguage);
+		             //System.out.println("val========"+val.equals(fyplmClxhqdConstants_mxJPO.Zx_Code));
+		             //System.out.println("key========"+key.indexOf("TWZX"));
+		             if(val.equals(fyplmClxhqdConstants_mxJPO.Zx_Code) && key.indexOf("TWZX")>=0){
+		            	 str += "<option value='"+key+"'>"+value+"</option>";
+					 }else if(val.equals(fyplmClxhqdConstants_mxJPO.Mx_Code) && key.indexOf("MX")>=0){
+						 str += "<option value='"+key+"'>"+value+"</option>";
+					 }
+		         }
+	  			 str += "</select>";
+			 }
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		} finally {
+			logger.debug("Exiting getBBPackingTypeModel");
+		}
+        return str;
+    }
+
 
 
 public MapList getMembers(Context context, DomainObject obj, StringList slUserName) throws FrameworkException {
