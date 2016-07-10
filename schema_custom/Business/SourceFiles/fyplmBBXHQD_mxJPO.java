@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.text.DecimalFormat;
 
 import org.apache.log4j.Logger;
 
@@ -533,6 +534,44 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	        return i;
 	    }
 
+	public void createBBProductPackaging(Context context, String[] args) throws Exception {
+		try {
+			ContextUtil.startTransaction(context, true);
+		    logger.debug("Entering createBBProductPackaging");
+		    HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		    HashMap requestMap = (HashMap) programMap.get("requestMap");
+		    HashMap paramMap = (HashMap) programMap.get("paramMap");
+		    String parentId = (String) requestMap.get("parentOID");
+		    String objId = (String) paramMap.get("objectId");
+
+		    String sLayerNo = (String)requestMap.get("FYPLM Layer No");
+		    String sNumPerLayer = (String) requestMap.get("FYPLM Packing Number Per Layer");
+		    String sSingleTotoalWeight = (String) requestMap.get("FYPLM Single Total Weight");
+		    
+		    double dLayerNo = sLayerNo!=null&&!"".equals(sLayerNo)?Double.parseDouble(sLayerNo):0.00;
+		    double dNumPerLayer = sNumPerLayer!=null&&!"".equals(sNumPerLayer)?Double.parseDouble(sNumPerLayer):0.00;
+		    double dSingleTotoalWeight = sSingleTotoalWeight!=null&&!"".equals(sSingleTotoalWeight)?Double.parseDouble(sSingleTotoalWeight):0.00;
+		    
+		    double dNumPerBox = dLayerNo*dNumPerLayer;
+		    double dPackNetWeight = dNumPerBox*dSingleTotoalWeight;
+		    
+		    DecimalFormat df = new DecimalFormat("######0.00");
+		    DomainObject objPack = DomainObject.newInstance(context, objId);
+
+		    objPack.setAttributeValue(context, "FYPLM Packing Number Per Box", df.format(dNumPerBox));
+		    objPack.setAttributeValue(context, "FYPLM Packing Net Weight", df.format(dPackNetWeight));
+		    
+		    ContextUtil.commitTransaction(context);
+		} catch (Exception e) {
+			ContextUtil.abortTransaction(context);
+		    logger.error(e.getMessage(), e);
+		    throw e;
+		} finally {
+		    logger.debug("Exiting createProductPackaging");
+		}
+	}
+	
+	
 
 	public String getQuotationBasedRangeValues(Context context,String[] args) throws Exception{
 			String str = "";
