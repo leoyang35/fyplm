@@ -3,3 +3,4 @@ eService Number Generator	type_FYPLMBBTopPart				eService Object Generator	Exist
 eService Number Generator	type_FYPLMBBTempPart				eService Object Generator	Exists	eService Administration	creator		00000001
 
 eService Number Generator	type_FYPLMBBXHQD		type_FYPLMBBXHQD		eService Object Generator	Exists	eService Administration	creator		00000001
+eService Number Generator	type_FYPLMBBProductPackaging		type_FYPLMBBProductPackaging		eService Object Generator	Exists	eService Administration	creator		00000001

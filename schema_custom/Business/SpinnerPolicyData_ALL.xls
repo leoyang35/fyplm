@@ -3,4 +3,5 @@ FYPLM BB Temp Part	FYPLM BB Temp Part	FYPLM Baobian Temp Part Policy	00,01,02,co
 FYPLM BB Top Part	FYPLM BB Top Part	FYPLM Baobian Top Part Policy	00,01,02,continue	STORE	FALSE	FYPLM BB Top Part	generic	generic	FALSE	Exits	Exits	FALSE
 FYPLM BB Step	FYPLM BB Step	FYPLM BB Step	-	STORE	FALSE	FYPLM BB Step	generic	generic	FALSE	Exits	Exits	FALSE
 
+FYPLM BB Product Packaging	FYPLM BB Product Packaging	FYPLM BB Product Packaging Policy	00,01,02,continue	STORE	FALSE	FYPLM BB Product Packaging	generic	generic	FALSE	Exits	Exits	FALSE	
 FYPLM BBXHQD	FYPLM BBXHQD		"00,01,02,continue"	STORE	FALSE	FYPLM BBXHQD	generic	generic	FALSE	Create | Review | Release | Cancel	Create | Review | Release | Cancel	TRUE	

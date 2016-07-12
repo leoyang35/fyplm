@@ -36,4 +36,19 @@ FYPLM BBXHQD Center of Spherical Tolerance	FYPLM BBXHQD Center of Spherical Tole
 FYPLM BBXHQD Printing Position Tolerance	FYPLM BBXHQD Printing Position Tolerance	string	FYPLM BBXHQD Printing Position Tolerance		 	FALSE	FALSE		
 FYPLM BBXHQD Printing White Trim Requirement	FYPLM BBXHQD Printing White Trim Requirement	string	FYPLM BBXHQD Printing White Trim Requirement		 	FALSE	FALSE		
 FYPLM BBXHQD Covered Edge Glass Requirement	FYPLM BBXHQD Covered Edge Glass Requirement	string	FYPLM BBXHQD Covered Edge Glass Requirement		 	FALSE	FALSE		
+FYPLM Single Weight	FYPLM Single Weight	real	FYPLM Single Weight		 	FALSE	FALSE		
+FYPLM Single Total Weight	FYPLM Single Total Weight	real	FYPLM Single Total Weight			FALSE	FALSE		
+FYPLM Layer No	FYPLM Layer No	integer	FYPLM Layer No			FALSE	FALSE		
+FYPLM Packing Number Per Layer	FYPLM Packing Number Per Layer	integer	FYPLM Packing Number Per Layer			FALSE	FALSE		
+FYPLM Packing Number Per Box	FYPLM Packing Number Per Box	integer	FYPLM Packing Number Per Box			FALSE	FALSE		
+FYPLM Packing Net Weight	FYPLM Packing Net Weight	real	FYPLM Packing Net Weight			FALSE	FALSE		
+FYPLM Foam Size	FYPLM Foam Size	integer	FYPLM Foam Size			FALSE	FALSE		
+FYPLM Amortization	FYPLM Amortization	real	FYPLM Amortization			FALSE	FALSE		
+FYPLM Unit Price	FYPLM Unit Price	real	FYPLM Unit Price			FALSE	FALSE		
+FYPLM Container Size	FYPLM Container Size	real	FYPLM Container Size			FALSE	FALSE		
+FYPLM Box Length	FYPLM Box Length	real	FYPLM Box Length			FALSE	FALSE		
+FYPLM Box Width	FYPLM Box Width	real	FYPLM Box Width			FALSE	FALSE		
+FYPLM Box Height	FYPLM Box Height	real	FYPLM Box Height			FALSE	FALSE		
+FYPLM Box Total Number	FYPLM Box Total Number	integer	FYPLM Box Total Number			FALSE	FALSE		
+FYPLM Container Total Number	FYPLM Container Total Number	integer	FYPLM Container Total Number			FALSE	FALSE		
 FYPLM Vendor Grade	FYPLM Vendor Grade	string	Vendor Grade	First Level Vendor	 = | = First Level Vendor | = Second Level Vendor	FALSE	FALSE		

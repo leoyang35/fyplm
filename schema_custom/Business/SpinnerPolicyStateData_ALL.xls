@@ -4,7 +4,8 @@ FYPLM BB Temp Part	Release	true	true	false	true
 FYPLM BB Temp Part	Obsolete	true	true	false	true							
 FYPLM BB Top Part	Exits	true	true	false	true							
 
-FYPLM BBXHQD	Create	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Review	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Release	TRUE	TRUE	FALSE	TRUE							
-FYPLM BBXHQD	Cancel	TRUE	TRUE	FALSE	TRUE							
+FYPLM BB Product Packaging	Exits	true	true	false	true							
+FYPLM BBXHQD	Create	true	true	false	true							
+FYPLM BBXHQD	Review	true	true	false	true							
+FYPLM BBXHQD	Release	true	true	false	true							
+FYPLM BBXHQD	Cancel	true	true	false	true							
