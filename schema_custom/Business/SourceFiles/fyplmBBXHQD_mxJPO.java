@@ -48,13 +48,190 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = PropertyUtil.getSchemaProperty("attribute_FYPLMCustomerPartNumber");
     public static final String SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER).append(AEND).toString();
 
+    public static final String ATTRIBUTE_FYPLM_PRODUCTION_TYPE = PropertyUtil.getSchemaProperty("attribute_FYPLMProductionType");
+    public static final String SELECT_ATTRIBUTE_FYPLM_PRODUCTION_TYPE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_PRODUCTION_TYPE).append(AEND).toString();
+    
+    public static final String ATTRIBUTE_FYPLM_MASTER_DEVICE = PropertyUtil.getSchemaProperty("attribute_FYPLMMasterDevice");
+    public static final String SELECT_ATTRIBUTE_FYPLM_MASTER_DEVICE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_MASTER_DEVICE).append(AEND).toString();
+    
+    public static final String ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE = PropertyUtil.getSchemaProperty("attribute_FYPLMFixedAssetsDepreciationCode");
+    public static final String SELECT_ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE).append(AEND).toString();
+    
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TOPPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
     public static final String RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBTopPartClassBMaterialPart");
     public static final String RELATIONSHIP_FYPLM_BBXHQD_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDClassBMaterialPart");
+    public static final String RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTechnologicalProcess");
+    public static final String RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP = PropertyUtil.getSchemaProperty("relationship_FYPLMTechnologicalProcessBBStep");
+    public static final String RELATIONSHIP_FYPLM_LP_BBXHQD = PropertyUtil.getSchemaProperty("relationship_FYPLMLPBBXHQD");
     
     public static final String TYPE_FYPLM_BBXHQD = PropertyUtil.getSchemaProperty("type_FYPLMBBXHQD");
     public static final String TYPE_FYPLM_BB_TOP_PART = PropertyUtil.getSchemaProperty("type_FYPLMBBTopPart");
+    public static final String TYPE_FYPLM_BB_STEP = PropertyUtil.getSchemaProperty("type_FYPLMBBStep");
+    public static final String TYPE_FYPLM_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("type_FYPLMTechnologicalProcess");
+  
     
+    public Map getProductionType(Context context, String[] args) throws Exception {
+        logger.info("Entering getProductionType().");
+        //String str = "";
+        Map rangeMap = new HashMap();
+        StringList slValue = new StringList();
+        StringList slDisplay = new StringList();
+         Map programMap = (Map) JPO.unpackArgs(args);
+         HashMap requestMap = (HashMap) programMap.get("requestMap");
+         HashMap rowValuesMap = (HashMap) programMap.get("rowValues");
+         String processId = (String) rowValuesMap.get("objectId");
+         String BBId = (String) requestMap.get("parentOID");
+         
+         System.out.println("processId=================================="+processId);
+         System.out.println("clxhqdId=================================="+BBId);
+         DomainObject objProcess = DomainObject.newInstance(context, processId);
+         String processName = objProcess.getInfo(context, SELECT_NAME);
+         
+         DomainObject objBB = DomainObject.newInstance(context, BBId);
+      
+	    String sProductionPlace = "CHN";
+	    StringList slObj = new StringList();
+         slObj.addElement(SELECT_ID);
+         slObj.addElement(SELECT_TYPE);
+         slObj.addElement(SELECT_NAME);
+         //logger.info("o is slObj ------------------" + slObj);
+         StringList slRel = new StringList();
+         slRel.addElement(SELECT_RELATIONSHIP_ID);
+         MapList mapList = objBB.getRelatedObjects(context,
+        		 RELATIONSHIP_FYPLM_LP_BBXHQD,
+                 fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Loading_Position,
+                 slObj,
+                 slRel,
+                 true,
+                 false,
+                 (short)1,
+                 EMPTY_STRING,
+                 EMPTY_STRING,
+                 0);
+	    if(mapList!=null && mapList.size()>0){
+	    	Map lpMap = (Map)mapList.get(0);
+	        System.out.println("lpMap.size()=================================="+lpMap);
+	    	String lpId = (String)lpMap.get(DomainObject.SELECT_ID); 	
+	    	DomainObject objLp = DomainObject.newInstance(context, lpId);
+	    	String sSelect = new StringBuilder(ABEGIN)
+	    			.append(fyplmClxhqdConstants_mxJPO.ATTR_FYPLM_CLXHQD_Yieldly)
+	    			.append(AEND).toString();
+	    	slObj.addElement(sSelect);
+	    	MapList mlBMs = objLp.getRelatedObjects(context, 
+	    			"FYPLM LP BM", 
+	    			fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Bid_Management_Report, 
+	    			slObj, 
+	    			slRel, 
+	    			true, 
+	    			false, 
+	    			(short) 1, 
+	    			EMPTY_STRING, 
+	    			EMPTY_STRING,
+	    			0);
+	    	if (mlBMs.size() > 0) {
+	    		
+		    	sProductionPlace = (String)((Map)mlBMs.get(0)).get(sSelect);
+	    	}
+	    	  
+            System.out.println(sProductionPlace);
+	    }
+
+        String sLanguage = context.getSession().getLanguage();
+
+         AttributeType atrProductionType = new AttributeType(ATTRIBUTE_FYPLM_PRODUCTION_TYPE);
+         atrProductionType.open(context);
+         StringList strList = atrProductionType.getChoices(context);
+         System.out.println("ATTRIBUTE_FYPLM_MASTER_DEVICE========"+ATTRIBUTE_FYPLM_PRODUCTION_TYPE);
+         System.out.println("strList========"+strList);
+         strList.sort();
+         atrProductionType.close(context);
+         for(int i=0; i<strList.size();i++){
+             String key = (String)strList.get(i);
+             
+             System.out.println(key);
+             
+             String value = i18nNow.getRangeI18NString(ATTRIBUTE_FYPLM_PRODUCTION_TYPE, key, sLanguage);
+             String startKey = "";
+             
+ 		  	if (key.startsWith("USA")) {
+ 		  		if (sProductionPlace.equals("DT")) {
+ 		  		slValue.add(key);
+ 		  		slDisplay.add(value);
+ 		  		}
+ 		  	} else if (key.startsWith("RUS")){
+		  		if (sProductionPlace.equals("RU")) {
+	 		  		slValue.add(key);
+	 		  		slDisplay.add(value);
+		  		}
+ 		  	} else {
+ 		  		if (!sProductionPlace.equals("DT") && !sProductionPlace.equals("RU")) {
+	 		  		slValue.add(key);
+	 		  		slDisplay.add(value);
+ 		  		}
+ 		  	}
+          }
+         rangeMap.put("RangeValues", slValue);
+         rangeMap.put("RangeDisplayValue", slDisplay);
+        return rangeMap;
+    }
+    
+    public StringList getTecProcessListName(Context context, String[] args) throws Exception {
+        StringList str = new StringList();
+    	HashMap programMap = (HashMap) JPO.unpackArgs(args);
+    	MapList objList = (MapList)programMap.get("objectList");
+    	for (Iterator iter = objList.iterator(); iter.hasNext();) {
+            Map map = (Map) iter.next();
+            String objectId = (String)map.get("id");
+            DomainObject obj = DomainObject.newInstance(context,objectId);
+            String strType = obj.getInfo(context, SELECT_TYPE);
+            if(strType.equals(TYPE_FYPLM_TECHNOLOGICAL_PROCESS)){
+                String sName = obj.getInfo(context, SELECT_NAME);
+                str.addElement(sName);
+            }else if(strType.equals(TYPE_FYPLM_BB_STEP)){
+             	String processName = obj.getInfo(context, SELECT_NAME);
+            	processName = i18nNow.getRangeI18NString("FYPLM BB Step", processName, context.getSession().getLanguage());
+            	str.addElement(processName);
+            } else {
+            	str.addElement(EMPTY_STRING);
+            }
+    	}
+        return str;
+    }
+    
+    public MapList getExpandTecProcessList(Context context, String[] args) throws Exception {
+        logger.info("Entering getTecProcessList().");
+        MapList mlElements = new MapList();
+        Map map = (Map) JPO.unpackArgs(args);
+        String sObjectId = (String) map.get("objectId");
+        DomainObject objElement = DomainObject.newInstance(context, sObjectId);
+        StringList slObj = new StringList();
+        slObj.addElement(SELECT_ID);
+        slObj.addElement(SELECT_TYPE);
+        slObj.addElement(SELECT_NAME);
+
+        StringList slRel = new StringList();
+        slRel.addElement(SELECT_RELATIONSHIP_ID);
+        slRel.addElement(ATTRIBUTE_FYPLM_PRODUCTION_TYPE);
+        slRel.addElement(ATTRIBUTE_FYPLM_MASTER_DEVICE);
+        slRel.addElement(ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE);
+        mlElements = objElement.getRelatedObjects(context,
+        		RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP,
+                TYPE_FYPLM_BB_STEP,
+                slObj,
+                slRel,
+                true,
+                true,
+                (short)0,
+                EMPTY_STRING,
+                EMPTY_STRING,
+                0);
+        for (Iterator iter = mlElements.iterator(); iter.hasNext();) {
+            Map mElement = (Map) iter.next();
+            mElement.put("hasChildren", "false");
+        }
+        mlElements.sort("name", "ascending", "string");
+        return mlElements;
+    }
     
     @com.matrixone.apps.framework.ui.ExcludeOIDProgramCallable
     public StringList excludeConnected(Context context, String[] args) throws Exception {
