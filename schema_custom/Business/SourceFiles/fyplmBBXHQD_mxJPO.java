@@ -52,25 +52,213 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String ATTRIBUTE_FYPLM_PRODUCTION_TYPE = PropertyUtil.getSchemaProperty("attribute_FYPLMProductionType");
     public static final String SELECT_ATTRIBUTE_FYPLM_PRODUCTION_TYPE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_PRODUCTION_TYPE).append(AEND).toString();
     
-    public static final String ATTRIBUTE_FYPLM_MASTER_DEVICE = PropertyUtil.getSchemaProperty("attribute_FYPLMMasterDevice");
-    public static final String SELECT_ATTRIBUTE_FYPLM_MASTER_DEVICE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_MASTER_DEVICE).append(AEND).toString();
+    public static final String ATTRIBUTE_FYPLM_BBXHQD_PRODUCT_FEATURE = PropertyUtil.getSchemaProperty("attribute_FYPLMBBXHQDProductFeature");
+    public static final String SELECT_ATTRIBUTE_FYPLM_BBXHQD_PRODUCT_FEATURE= new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_BBXHQD_PRODUCT_FEATURE).append(AEND).toString();
     
     public static final String ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE = PropertyUtil.getSchemaProperty("attribute_FYPLMFixedAssetsDepreciationCode");
     public static final String SELECT_ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_FIXED_ASSETS_DEPRECIATION_CODE).append(AEND).toString();
     
+    public static final String ATTRIBUTE_FYPLM_MASTER_DEVICE = PropertyUtil.getSchemaProperty("attribute_FYPLMMasterDevice");
+    public static final String SELECT_ATTRIBUTE_FYPLM_MASTER_DEVICE = new StringBuilder(ABEGIN).append(ATTRIBUTE_FYPLM_MASTER_DEVICE).append(AEND).toString();
+        
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TOPPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTopPart");
     public static final String RELATIONSHIP_FYPLM_BBTOPPART_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBTopPartClassBMaterialPart");
     public static final String RELATIONSHIP_FYPLM_BBXHQD_CLASSBMATERIALPART = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDClassBMaterialPart");
     public static final String RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDTechnologicalProcess");
     public static final String RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP = PropertyUtil.getSchemaProperty("relationship_FYPLMTechnologicalProcessBBStep");
     public static final String RELATIONSHIP_FYPLM_LP_BBXHQD = PropertyUtil.getSchemaProperty("relationship_FYPLMLPBBXHQD");
+    public static final String RELATIONSHIP_FYPLM_TECHNOLOGICAL_ROUTE_TOP_PART = PropertyUtil.getSchemaProperty("relationship_FYPLMTechnologicalRouteTopPart");
     
     public static final String TYPE_FYPLM_BBXHQD = PropertyUtil.getSchemaProperty("type_FYPLMBBXHQD");
     public static final String TYPE_FYPLM_BB_TOP_PART = PropertyUtil.getSchemaProperty("type_FYPLMBBTopPart");
     public static final String TYPE_FYPLM_BB_STEP = PropertyUtil.getSchemaProperty("type_FYPLMBBStep");
     public static final String TYPE_FYPLM_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("type_FYPLMTechnologicalProcess");
   
+	public void createTecProcessPostProcess(Context context, String[] args) throws Exception {
+
+		ContextUtil.startTransaction(context, true);
+		logger.debug("Entering createTecProcessPostProcess");
+		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+	    HashMap requestMap = (HashMap) programMap.get("requestMap");
+		HashMap paramMap = (HashMap) programMap.get("paramMap");
+
+		String sBBId = (String) paramMap.get("objectId");
+
+		String tecProId= FrameworkUtil.autoName(context, "type_FYPLMTechnologicalProcess", "policy_FYPLMTechnologicalProcess");
+		DomainObject objTecPro = DomainObject.newInstance(context, tecProId);
+		System.out.println(sBBId);
+		System.out.println(RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS);
+		System.out.println(tecProId);
+		DomainRelationship.connect(context, sBBId, RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS , tecProId, true);
+
+		for(int i=1;i<=100;i++){
+			String relatedConfig = (String) requestMap.get("topPart"+i);
+			
+			System.out.println(requestMap);
+			if (relatedConfig !=null && !relatedConfig.equals("")){
+				DomainRelationship.connect(context, tecProId, RELATIONSHIP_FYPLM_TECHNOLOGICAL_ROUTE_TOP_PART, relatedConfig, true);
+			} else {
+				break;
+			}
+		}
+
+		for(int i=1;i<=100;i++){
+			String process = (String) requestMap.get("process"+i);
+			if(process!=null && !process.equals("")){
+				DomainObject objProcess = DomainObject.newInstance(context,process);
+				DomainRelationship rel = DomainRelationship.connect(context, objTecPro, 
+						RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP, objProcess);
+			} else {
+				break;
+			}
+		}
+		
+		ContextUtil.commitTransaction(context);
+	}
     
+    public String getProductFeature(Context context, String[] args) throws Exception{
+    	System.out.println("Entering getProductFeature : ");
+    	Map programMap = (Map) JPO.unpackArgs(args);
+        HashMap requestMap = (HashMap) programMap.get("requestMap");
+        
+        String sId = (String) requestMap.get("objectId");
+        DomainObject objBB = DomainObject.newInstance(context,sId);
+        String sFeature = objBB.getAttributeValue(context, ATTRIBUTE_FYPLM_BBXHQD_PRODUCT_FEATURE);
+        sFeature = i18nNow.getRangeI18NString(ATTRIBUTE_FYPLM_BBXHQD_PRODUCT_FEATURE, sFeature, context.getSession().getLanguage());
+        
+        return sFeature;
+    }
+    public String getProcessRangeValues(Context context,String[] args) throws Exception{
+  		String str = "";
+  			HashMap programMap = (HashMap) JPO.unpackArgs(args);
+  			HashMap paramMap = (HashMap) programMap.get("paramMap");
+  			String objectId = (String) paramMap.get("objectId");
+
+  			DomainObject objBB = DomainObject.newInstance(context, objectId);
+  			StringList slObj = new StringList();
+  		    slObj.addElement(SELECT_ID);
+  		    slObj.addElement(SELECT_NAME);
+  		    
+  			MapList processList = findObjects(context,
+  					TYPE_FYPLM_BB_STEP,
+  					context.getVault().getName(),
+  					EMPTY_STRING,
+                      slObj);
+  			processList.sort("name", "ascending", "string");
+  		    if (processList.size() > 0) {
+  		    	int i=1;
+  		    	str += "<table border='0' cellspacing='0' cellpadding='0' ><tr>";
+    				for (Iterator iter = processList.iterator(); iter.hasNext();) {
+        				Map process = (Map) iter.next();
+        				String processId = (String)process.get(SELECT_ID);
+        				
+        			    String processName = (String) process.get(SELECT_NAME);
+        			    processName = i18nNow.getRangeI18NString(TYPE_FYPLM_BB_STEP, processName, context.getSession().getLanguage());
+        			    	str += "<td height='40px' style='padding-left:10px;padding-right:10px;'><input type='checkbox' name='process"+i+"' value='"+processId+"'/>"+processName+"</td>";
+            			    if(i%2==0){
+            			    	str += "</tr><tr>";
+            			    }
+            			    i++;
+
+          		}
+    				str += "</tr></table>";
+          	}
+          return str;
+      }
+    public String getTopPartRangeValues(Context context,String[] args) throws Exception{
+    		String str = "";
+			HashMap programMap = (HashMap) JPO.unpackArgs(args);
+			HashMap paramMap = (HashMap) programMap.get("paramMap");
+			String objectId = (String) paramMap.get("objectId");
+			
+			DomainObject objBB = DomainObject.newInstance(context, objectId);
+			HashMap relTopPartMap = new HashMap();
+			
+            StringList slObj = new StringList();
+            slObj.addElement(SELECT_ID);
+            slObj.addElement(SELECT_TYPE);
+            slObj.addElement(SELECT_NAME);
+ 
+            StringList slRel = new StringList(SELECT_RELATIONSHIP_ID);
+            MapList mapList = objBB.getRelatedObjects(context,
+            		RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS,
+                    fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Technological_Process,
+                    slObj,
+                    slRel,
+                    false,
+                    true,
+                    (short)1,
+                    EMPTY_STRING,
+                    EMPTY_STRING,
+                    0);
+            for (Iterator iter = mapList.iterator(); iter.hasNext();) {
+                Map mElement = (Map) iter.next();
+                String tecProcessId = (String)mElement.get(SELECT_ID);
+                DomainObject objTecPro = DomainObject.newInstance(context, tecProcessId);
+                MapList topPartList = objTecPro.getRelatedObjects(context,
+                		RELATIONSHIP_FYPLM_TECHNOLOGICAL_ROUTE_TOP_PART,
+                		TYPE_FYPLM_BB_TOP_PART,
+                        slObj,
+                        slRel,
+                        false,
+                        true,
+                        (short)1,
+                        EMPTY_STRING,
+                        EMPTY_STRING,
+                        0);
+                for (Iterator iter2 = topPartList.iterator(); iter2.hasNext();) {
+                    Map topPartMap = (Map) iter2.next();
+                    String topPartId = (String)topPartMap.get(SELECT_ID);
+                    relTopPartMap.put(topPartId, topPartId);
+                }
+            }
+
+			StringList topPartSelect = new StringList();
+            topPartSelect.addElement(SELECT_ID);
+            topPartSelect.addElement(SELECT_NAME);
+            topPartSelect.addElement(SELECT_REVISION);
+            topPartSelect.addElement(SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
+            
+            StringList clxhqdTopPartRelList = new StringList();
+	    		clxhqdTopPartRelList.addElement(SELECT_RELATIONSHIP_ID);
+    
+		    MapList topPartList = objBB.getRelatedObjects(context,
+		    				RELATIONSHIP_FYPLM_BBXHQD_TOPPART,
+		    				TYPE_FYPLM_BB_TOP_PART,
+		                    topPartSelect,
+		                    clxhqdTopPartRelList,
+		                    false,
+		                    true,
+		                    (short) 1,
+		                    null,
+		                    null,
+		                    0);
+		    topPartList.sort("name", "ascending", "string");
+		    if (topPartList.size() > 0) {
+		    	int i=1;
+		    	str += "<table border='0' ><tr>";
+  				for (Iterator iter = topPartList.iterator(); iter.hasNext();) {
+      				Map topPart = (Map) iter.next();
+      				String topPartId = (String)topPart.get(SELECT_ID);
+      				if(relTopPartMap.get(topPartId) != null){
+      					continue;
+      				}
+      			    String topPartName = (String) topPart.get(SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
+
+      			    String topPartRev = (String) topPart.get(SELECT_REVISION);
+      			    String topPartTitle = topPartName+" "+topPartRev;
+
+	      	        str += "<td height='25px;' style='padding-right:20px;'><input type='checkbox' name='topPart"+i+"' value='"+topPartId+"'/>"+topPartTitle+"</td>";
+    			    if(i%2==0){
+    			    	str += "</tr><tr>";
+    			    }
+    			    i++;
+	      	        
+        		}
+  				str += "</tr></table>";
+        	}
+      return str;
+    }
     public Map getProductionType(Context context, String[] args) throws Exception {
         logger.info("Entering getProductionType().");
         //String str = "";
@@ -83,8 +271,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
          String processId = (String) rowValuesMap.get("objectId");
          String BBId = (String) requestMap.get("parentOID");
          
-         System.out.println("processId=================================="+processId);
-         System.out.println("clxhqdId=================================="+BBId);
          DomainObject objProcess = DomainObject.newInstance(context, processId);
          String processName = objProcess.getInfo(context, SELECT_NAME);
          
