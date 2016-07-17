@@ -74,7 +74,95 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String TYPE_FYPLM_BB_STEP = PropertyUtil.getSchemaProperty("type_FYPLMBBStep");
     public static final String TYPE_FYPLM_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("type_FYPLMTechnologicalProcess");
   
-	public void createTecProcessPostProcess(Context context, String[] args) throws Exception {
+    public void tecProcessAddStepPostProcess(Context context, String[] args) throws Exception {
+			ContextUtil.startTransaction(context, true);
+			HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		    HashMap requestMap = (HashMap) programMap.get("requestMap");
+			HashMap paramMap = (HashMap) programMap.get("paramMap");
+			String tecProcessId = (String) paramMap.get("tecProcessId");
+			DomainObject objTecPro = DomainObject.newInstance(context,tecProcessId);
+
+			for(int i=1;i<=50;i++){
+				String processId = (String) requestMap.get("process"+i);
+				if(processId!=null && !processId.equals("")){
+					DomainObject objProcess = DomainObject.newInstance(context,processId);
+					String processCode = objProcess.getInfo(context, SELECT_NAME);
+					DomainRelationship rel = DomainRelationship.connect(context, objTecPro,
+							RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP , objProcess);
+				}
+			}
+			ContextUtil.commitTransaction(context);
+	}
+    
+    public String getOtherProcessRangeValues(Context context,String[] args) throws Exception{
+  		String str = "";
+  			logger.debug("Entering getOtherProcessRangeValues");
+  			HashMap programMap = (HashMap) JPO.unpackArgs(args);
+  			HashMap paramMap = (HashMap) programMap.get("paramMap");
+  			String objectId = (String) paramMap.get("objectId");
+  			
+  			DomainObject objTecProcess = DomainObject.newInstance(context, objectId);
+  			String strType = objTecProcess.getInfo(context, SELECT_TYPE);
+  			if(strType.equals(TYPE_FYPLM_BB_STEP)){
+  				return "";
+  			}
+
+  			StringList slObj = new StringList();
+  		    slObj.addElement(SELECT_ID);
+  		    slObj.addElement(SELECT_NAME);
+  		    StringList slRel = new StringList();
+              slRel.addElement(SELECT_RELATIONSHIP_ID);
+  		    
+  		    MapList oldProcessList = objTecProcess.getRelatedObjects(context,
+  		    		RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP,
+  		    		TYPE_FYPLM_BB_STEP,
+                      slObj,
+                      slRel,
+                      false,
+                      true,
+                      (short)1,
+                      EMPTY_STRING,
+                      EMPTY_STRING,
+                      0);
+  		    HashMap tempMap = new HashMap();
+              for (Iterator iter = oldProcessList.iterator(); iter.hasNext();) {
+                  Map process = (Map) iter.next();
+                  String processId = (String)process.get(SELECT_ID);
+                  tempMap.put(processId, processId);
+              }
+  		    //System.out.println("tempMap===="+tempMap);
+              String sWhere  = EMPTY_STRING;
+  			MapList processList = findObjects(context,
+  						TYPE_FYPLM_BB_STEP,
+                      context.getVault().getName(),
+                      sWhere,
+                      slObj);
+  			processList.sort("name", "ascending", "string");
+  		    if (processList.size() > 0) {
+  		    	int i=1;
+  		    	str += "<table border='0' cellpadding='0'  cellspacing='0' ><tr>";
+    				for (Iterator iter = processList.iterator(); iter.hasNext();) {
+        				Map process = (Map) iter.next();
+        				String processId = (String)process.get(SELECT_ID);
+        			    if(i==1){
+        			    	str += "<input type='hidden' name='tecProcessId' value='"+objectId+"' />";
+        			    }
+        			    if(tempMap.get(processId)==null ){
+            			    String processName = (String)process.get(SELECT_NAME);
+            			    processName = i18nNow.getRangeI18NString(TYPE_FYPLM_BB_STEP, processName, context.getSession().getLanguage());
+        			    		str += "<td height='40px' style='padding-left:10px;padding-right:10px;'><input type='checkbox' name='process"+i+"' value='"+processId+"' />"+processName+"</td>";
+            			    	if(i%2==0){
+                			    	str += "</tr><tr>";
+                			    }
+                			    i++;
+        			    }
+          		}
+    				str += "</tr></table>";
+          	}
+          return str;
+      }
+      
+    public void createTecProcessPostProcess(Context context, String[] args) throws Exception {
 
 		ContextUtil.startTransaction(context, true);
 		logger.debug("Entering createTecProcessPostProcess");
@@ -102,15 +190,13 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 			}
 		}
 
-		for(int i=1;i<=100;i++){
+		for(int i=1;i<=20;i++){
 			String process = (String) requestMap.get("process"+i);
 			if(process!=null && !process.equals("")){
 				DomainObject objProcess = DomainObject.newInstance(context,process);
 				DomainRelationship rel = DomainRelationship.connect(context, objTecPro, 
 						RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP, objProcess);
-			} else {
-				break;
-			}
+			} 
 		}
 		
 		ContextUtil.commitTransaction(context);
@@ -154,7 +240,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
         				
         			    String processName = (String) process.get(SELECT_NAME);
         			    processName = i18nNow.getRangeI18NString(TYPE_FYPLM_BB_STEP, processName, context.getSession().getLanguage());
-        			    	str += "<td height='40px' style='padding-left:10px;padding-right:10px;'><input type='checkbox' name='process"+i+"' value='"+processId+"'/>"+processName+"</td>";
+        			    	str += "<td height='40px' style='padding-left:10px;padding-right:10px;'><input type='checkbox' name='process"+i+"' value='"+processId+"' checked/>"+processName+"</td>";
             			    if(i%2==0){
             			    	str += "</tr><tr>";
             			    }

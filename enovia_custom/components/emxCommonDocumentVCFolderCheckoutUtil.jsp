@@ -243,8 +243,9 @@ function reloadProductionTypeRange(newValue, current_Id) {
 }
 
 function reloadMasterDeviceRange(newValue, current_Id){
-	var vRowId = currentRow.getAttribute("id");
-	alert(vRowId);
+	var sProdType = emxEditableTable.getCellValueByRowId(newValue, "FYPLM Production Type").value.current.actual;
+	var sMasterDevice = this;
+	alert(sMasterDevice)
 }
 //Cloud End
 function validateMeetingDate(editedDate, rowId)
