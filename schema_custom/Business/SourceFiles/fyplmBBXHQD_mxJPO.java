@@ -920,7 +920,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 
 
 	public int triggerBBXHQDCreateAction(Context context, String[] args) throws Exception {
-	        logger.info("Entering createClxhqd()");
+	        logger.info("Entering triggerBBXHQDCreateAction()");
 	        int i = 0;
 	        String bbxhqdId = args[0];
 	        boolean blHasPush = false;
@@ -928,6 +928,7 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	            String sCurrentUser = context.getUser();
 	            DomainObject objBBXHQD = DomainObject.newInstance(context);
 	            objBBXHQD.setId(bbxhqdId);
+	            String sOwner = objBBXHQD.getInfo(context,SELECT_OWNER);
 	            StringList slObj = new StringList();
 	            slObj.addElement(SELECT_ID);
 	            slObj.addElement(SELECT_TYPE);
@@ -949,12 +950,9 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	//	                    context.getSession().getLanguage());
 	//				throw new FrameworkException(message);
 	//            }
-	            strList.addElement(sCurrentUser);
-	            System.out.println("firstChecker========="+sCurrentUser);
-	            System.out.println("sCurrentUser========="+sCurrentUser);
+	            strList.addElement(sOwner);
 	            strList.addElement(sCurrentUser);
 	            MapList mlMembers = getMembers(context, objBBXHQD, strList);
-	            System.out.println("mlMembers========="+mlMembers);
 	            fyplmRoute_mxJPO.createRoute(context,
 	                    mlMembers,
 	                    bbxhqdId,
