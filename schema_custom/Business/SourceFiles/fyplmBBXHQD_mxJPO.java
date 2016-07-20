@@ -845,6 +845,247 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	       logger.info("Exiting getCreateBBXHQDFormValue().");
 	       return sFieldValue;
 	   }
+   
+	public MapList getBBAllPrototypeEquipment(Context context, String[] args) throws Exception {
+	    logger.info("Entering getAllBBPrototypeEquipment().");
+	    MapList resList = new MapList();
+	    StringList objectSelects = new StringList();
+	    objectSelects.addElement(SELECT_ID);
+	    StringList relList = new StringList();
+	    relList.addElement(SELECT_RELATIONSHIP_ID);
+//	    objectSelects.addElement(SELECT_NAME);
+	    try {
+	    	HashMap programMap = (HashMap) JPO.unpackArgs(args);
+	    	String sBBXHQDId = (String)programMap.get("parentOID");
+
+	    	DomainObject objBBXHQD = DomainObject.newInstance(context,sBBXHQDId);
+	    	//System.out.println("clxhqdOID:::::::::"+clxhqdOID);
+	    	String objectWhere = "";
+	    	MapList pdeList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Equipment, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Equipment, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pdeList);
+	    	MapList pdgList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Gauge, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Gauge, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pdgList);
+	    	MapList pdmList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Mould, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Mould, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pdmList);
+	    	MapList pceList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Equipment, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Equipment, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pceList);
+	    	MapList pcgList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Gauge, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Gauge, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pcgList);
+	    	MapList pcmList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Mould, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Mould, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(pcmList);
+	    	//System.out.println("pceList::::::::::::"+pceList);
+	    } catch (FrameworkException e) {
+	        logger.error("There is an Exception in getAllBBPrototypeEquipment(): ", e);
+	        throw e;
+	    }
+	    logger.info("Exiting getAllBBPrototypeEquipment().");
+	    return resList;
+	}
+	
+    public void createBBAllEquipment(Context context, String[] args)
+            throws Exception {
+        try {
+            logger.debug("Entering createBBAllEquipment");
+            ContextUtil.startTransaction(context, true);
+            HashMap programMap = (HashMap) JPO.unpackArgs(args);
+            HashMap requestMap = (HashMap) programMap.get("requestMap");
+            HashMap paramMap = (HashMap) programMap.get("paramMap");
+            String parentId = (String) requestMap.get("parentOID");
+            String objId = (String) paramMap.get("objectId");
+            DomainObject objEquipment = DomainObject.newInstance(context,objId);
+            String en = (String) requestMap.get("FYPLM Equipment Name");
+            objEquipment.setAttributeValue(context, "FYPLM Equipment Name", en);
+            String strType = objEquipment.getInfo(context, SELECT_TYPE);
+            String relBBXHQDEquipment = "";
+            String relEquipmentTopPart = "";
+            if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Mould)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Mould;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Common_Mould_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Gauge)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Gauge;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Common_Gauge_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Common_Equipment)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Common_Equipment;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Common_Equipment_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Mould)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Mould;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Dedicated_Mould_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Gauge)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Gauge;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Dedicated_Gauge_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Prototype_Dedicated_Equipment)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Prototype_Dedicated_Equipment;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Prototype_Dedicated_Equipment_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Mould)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Mould;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Common_Mould_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Gauge)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Gauge;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Common_Gauge_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Equipment)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Equipment;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Common_Equipment_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Mould)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Mould;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Dedicated_Mould_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Gauge)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Gauge;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Dedicated_Gauge_Top_Part;
+            }else if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Equipment)){
+            	relBBXHQDEquipment = fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Equipment;
+            	relEquipmentTopPart = fyplmClxhqdConstants_mxJPO.RELATIONSHIP_FYPLM_Official_Dedicated_Equipment_Top_Part;
+            }
+            if(strType.indexOf("Common")>=0){
+            	DomainObject objBBXHQD = DomainObject.newInstance(context,parentId);
+            	StringList objectSelects = new StringList();
+        	    objectSelects.addElement(SELECT_ID);
+        	    StringList relList = new StringList();
+        	    relList.addElement(SELECT_RELATIONSHIP_ID);
+        	    String objectWhere = "";
+            	MapList mapList = objBBXHQD.getRelatedObjects(context,fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Top_Part, fyplmBBXHQDConstants_mxJPO.TYPE_FYPLM_BB_Top_Part, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+  				for (Iterator iter = mapList.iterator(); iter.hasNext();) {
+      				Map topPart = (Map) iter.next();
+      				String topPartId = (String)topPart.get(SELECT_ID);
+      				DomainRelationship.connect(context, objId, relEquipmentTopPart, topPartId, true);
+  				}
+            }else{
+            	for(int i=0;i<=100;i++){
+    				String relatedConfig = (String) requestMap.get("relatedConfig"+i);
+    				if(relatedConfig!=null && !relatedConfig.equals("")){
+    					//System.out.println("process---------========="+process);
+    					DomainRelationship.connect(context, objId, relEquipmentTopPart, relatedConfig, true);
+    				}
+    			}
+            }
+            //System.out.println("pceId========="+pceId);
+            DomainRelationship.connect(context, parentId,relBBXHQDEquipment, objId, true);
+            ContextUtil.commitTransaction(context);
+        } catch (Exception e) {
+        	ContextUtil.abortTransaction(context);
+            logger.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            logger.debug("Exiting createBBAllEquipment");
+        }
+    }
+    
+    public void createBBCertificate(Context context, String[] args)
+            throws Exception {
+        try {
+            logger.debug("Entering createBBCertificate");
+            ContextUtil.startTransaction(context, true);
+            HashMap programMap = (HashMap) JPO.unpackArgs(args);
+            HashMap requestMap = (HashMap) programMap.get("requestMap");
+            HashMap paramMap = (HashMap) programMap.get("paramMap");
+            String parentId = (String) requestMap.get("parentOID");
+            String objId = (String) paramMap.get("objectId");
+            DomainObject objEquipment = DomainObject.newInstance(context,objId);
+            String cp = (String) requestMap.get("FYPLM Certificate Program");
+            objEquipment.setAttributeValue(context, "FYPLM Certificate Program",cp);
+            String fe = (String) requestMap.get("FYPLM First Expand");
+            objEquipment.setAttributeValue(context, "FYPLM First Expand",fe);
+            //System.out.println("odeId========="+odeId);
+            DomainRelationship.connect(context, parentId, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Certificate, objId, true);
+            ContextUtil.commitTransaction(context);
+        } catch (Exception e) {
+        	ContextUtil.abortTransaction(context);
+            logger.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            logger.debug("Exiting createBBCertificate");
+        }
+    }
+    
+    /**
+     * create postProcessJPO.
+     */
+    public void createBBInvestment(Context context, String[] args)
+            throws Exception {
+        try {
+            logger.debug("Entering createBBInvestment");
+            HashMap programMap = (HashMap) JPO.unpackArgs(args);
+            HashMap requestMap = (HashMap) programMap.get("requestMap");
+            HashMap paramMap = (HashMap) programMap.get("paramMap");
+            String parentId = (String) requestMap.get("parentOID");
+            String objId = (String) paramMap.get("objectId");
+            //System.out.println("odeId========="+odeId);
+            DomainRelationship.connect(context, parentId, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Investment, objId, true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            logger.debug("Exiting createBBInvestment");
+        }
+    }
+    
+    /**
+     * create postProcessJPO.
+     */
+    public void createBBDevelopmentCosts(Context context, String[] args)
+            throws Exception {
+        try {
+        	ContextUtil.startTransaction(context, true);
+            logger.debug("Entering createBBDevelopmentCosts");
+            HashMap programMap = (HashMap) JPO.unpackArgs(args);
+            HashMap requestMap = (HashMap) programMap.get("requestMap");
+            HashMap paramMap = (HashMap) programMap.get("paramMap");
+            String parentId = (String) requestMap.get("parentOID");
+            String objId = (String) paramMap.get("objectId");
+            //System.out.println("odeId========="+odeId);
+            DomainRelationship.connect(context, parentId, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Development_Costs, objId, true);
+            
+            ContextUtil.commitTransaction(context);
+        } catch (Exception e) {
+        	ContextUtil.abortTransaction(context);
+            logger.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            logger.debug("Exiting createBBDevelopmentCosts");
+        }
+    }
+
+    
+    
+    
+	public MapList getBBAllOfficialEquipment(Context context, String[] args) throws Exception {
+	    logger.info("Entering getBBAllOfficialEquipment().");
+	    MapList resList = new MapList();
+	    StringList objectSelects = new StringList();
+	    objectSelects.addElement(SELECT_ID);
+	    StringList relList = new StringList();
+	    relList.addElement(SELECT_RELATIONSHIP_ID);
+//	    objectSelects.addElement(SELECT_NAME);
+	    try {
+	    	HashMap programMap = (HashMap) JPO.unpackArgs(args);
+	    	String sBBXHQDId = (String)programMap.get("parentOID");
+
+	    	DomainObject objBBXHQD = DomainObject.newInstance(context,sBBXHQDId);
+	    	//System.out.println("clxhqdOID:::::::::"+clxhqdOID);
+	    	String objectWhere = "";
+	    	MapList odeList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Equipment, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Equipment, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(odeList);
+	    	MapList odgList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Gauge, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Gauge, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(odgList);
+	    	MapList odmList = objBBXHQD.getRelatedObjects(context, fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Dedicated_Mould, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Dedicated_Mould, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(odmList);
+	    	MapList oceList = objBBXHQD.getRelatedObjects(context,fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Equipment, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Equipment, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(oceList);
+	    	MapList ocgList = objBBXHQD.getRelatedObjects(context,fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Gauge, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Gauge, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(ocgList);
+	    	MapList ocmList = objBBXHQD.getRelatedObjects(context,fyplmBBXHQDConstants_mxJPO.RELATIONSHIP_FYPLM_BBXHQD_Official_Common_Mould, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Official_Common_Mould, objectSelects, relList ,false, true, (short)1, objectWhere, null, 0);
+	    	resList.addAll(ocmList);
+	    	
+	    	//System.out.println("pceList::::::::::::"+pceList);
+	    } catch (FrameworkException e) {
+	        logger.error("There is an Exception in getBBAllOfficialEquipment(): ", e);
+	        throw e;
+	    }
+	    logger.info("Exiting getBBAllOfficialEquipment().");
+	    return resList;
+	}
+
+
+
 
 
 	public MapList getBBXHQDRevisionList(Context context, String[] args) throws Exception {

@@ -1,4 +1,5 @@
 Name	Registry Name	Description	Label	Href	Alt	Setting Name (use "|" delim)	Setting Value (use "|" delim)	Channels (use "," w/ "|" delims)	Hidden (boolean)	Icon File
 
 
+FYPLMBBEquipmentCertificatePortal	FYPLMBBEquipmentCertificatePortal	FYPLM BB Equipment Certificate Portal				Registered Suite	Components	FYPLMBBPrototypeEquipmentChannel , FYPLMBBOfficialEquipmentChannel | FYPLMBBCertificateChannel , FYPLMBBInvestmentChannel | FYPLMBBDevelopmentCostsChannel	FALSE
 FYPLMBBBOMRoutePortal	FYPLMBBBOMRoutePortal	FYPLM BB BOM RoutePortal				Registered Suite	Components	FYPLMBBXHQDBOMChannel | FYPLMBBXHQDRouteChannel	FALSE
