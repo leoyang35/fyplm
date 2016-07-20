@@ -1,4 +1,5 @@
 Name	Registry Name	Description	"Column Names (in order-use ""|"" delim)"	Hidden (boolean)
+FYPLMAttachmentsFitTable	FYPLMAttachmentsFitTable	FYPLM Attachments Fit Table	FYPLM Attachments Name | FYPLM Output Per Shift | FYPLM Rate Of Final Products | FYPLM Personnel Number | FYPLM Attachment Loss Rate | FYPLM Attachment Installation Location | FYPLM Related Configuration	FALSE
 FYPLMBBBOMTable	FYPLMBBBOMTable	FYPLM BB two level BOM Table	Name | MaterialName | CustomerPartNumber | FYPLM Material Unit | Supplier | FYPLMAttachmentUsage | DynamicParts	FALSE
 FYPLMBBRoute	FYPLMBBRoute	FYPLM BB Route	Name | FYPLM Production Type | FYPLM Master Device | FYPLM Output Per Shift | FYPLM Rate Of Final Products | FYPLM Glass Utilization | FYPLM Personnel Number | FYPLM Fixed Assets Depreciation Code | FYPLM Top Part	FALSE
 

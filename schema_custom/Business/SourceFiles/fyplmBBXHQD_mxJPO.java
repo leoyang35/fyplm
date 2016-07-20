@@ -68,12 +68,254 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
     public static final String RELATIONSHIP_FYPLM_TECHNOLOGICAL_PROCESS_BB_STEP = PropertyUtil.getSchemaProperty("relationship_FYPLMTechnologicalProcessBBStep");
     public static final String RELATIONSHIP_FYPLM_LP_BBXHQD = PropertyUtil.getSchemaProperty("relationship_FYPLMLPBBXHQD");
     public static final String RELATIONSHIP_FYPLM_TECHNOLOGICAL_ROUTE_TOP_PART = PropertyUtil.getSchemaProperty("relationship_FYPLMTechnologicalRouteTopPart");
+    public static final String RELATIONSHIP_FYPLM_BBXHQD_FITTING_ATTACHMENTS = PropertyUtil.getSchemaProperty("relationship_FYPLMBBXHQDFittingAttachments");
+    public static final String RELATIONSHIP_FYPLM_ATTACHMENTS_FITTING_ATTACHMENT_PART = PropertyUtil.getSchemaProperty("relationship_FYPLMAttachmentsFittingAttachmentPart");
+    public static final String RELATIONSHIP_FYPLM_ATTACHMENTS_FIT_TOP_PART = PropertyUtil.getSchemaProperty("relationship_FYPLMAttachmentsFitTopPart");
     
     public static final String TYPE_FYPLM_BBXHQD = PropertyUtil.getSchemaProperty("type_FYPLMBBXHQD");
     public static final String TYPE_FYPLM_BB_TOP_PART = PropertyUtil.getSchemaProperty("type_FYPLMBBTopPart");
     public static final String TYPE_FYPLM_BB_STEP = PropertyUtil.getSchemaProperty("type_FYPLMBBStep");
     public static final String TYPE_FYPLM_TECHNOLOGICAL_PROCESS = PropertyUtil.getSchemaProperty("type_FYPLMTechnologicalProcess");
-  
+    public static final String TYPE_FYPLM_BB_Temp_Part = PropertyUtil.getSchemaProperty("type_FYPLMBBTempPart");
+    
+    
+    public StringList getFittingAttachmentsListName(Context context, String[] args) throws Exception {
+        StringList str = new StringList();
+        	HashMap programMap = (HashMap) JPO.unpackArgs(args);
+        	MapList objList = (MapList)programMap.get("objectList");
+        	for (Iterator iter = objList.iterator(); iter.hasNext();) {
+                Map map = (Map) iter.next();
+                String objectId = (String)map.get("id");
+                DomainObject obj = DomainObject.newInstance(context,objectId);
+                String strType = obj.getInfo(context, SELECT_TYPE);
+                if(strType.equals(fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Fitting_Attachments)){
+                    String sName = obj.getInfo(context, SELECT_NAME);
+                    str.addElement(sName);
+	            }else if(strType.equals(TYPE_FYPLM_BB_Temp_Part)){
+	            	String tempPartName = obj.getAttributeValue(context, ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
+	            	str.addElement(tempPartName);
+	            }else if(obj.isKindOf(context, fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Class_B_Attachment_Part)){
+	            	String typeName = i18nNow.getTypeI18NString(strType, context.getSession().getLanguage());
+	            	str.addElement(typeName);
+	 	        } else {
+	            	str.addElement(EMPTY_STRING);
+	            }
+            }
+        return str;
+    }
+    
+    public MapList getExpandFittingAttachmentsList(Context context, String[] args) throws Exception {
+        MapList partList = new MapList();
+            Map map = (Map) JPO.unpackArgs(args);
+            String sObjectId = (String) map.get("objectId");
+            DomainObject objFitAtt = DomainObject.newInstance(context, sObjectId);
+            
+            StringList slPart = new StringList();
+            slPart.addElement(SELECT_ID);
+            slPart.addElement(SELECT_TYPE);
+            slPart.addElement(SELECT_NAME);
+            
+            StringList slObj = new StringList();
+            slObj.addElement(SELECT_ID);
+            slObj.addElement(SELECT_TYPE);
+            slObj.addElement(SELECT_NAME);
+            StringList slRel = new StringList(SELECT_RELATIONSHIP_ID);
+            
+            partList = objFitAtt.getRelatedObjects(context,
+            		RELATIONSHIP_FYPLM_ATTACHMENTS_FITTING_ATTACHMENT_PART,
+                    "*",
+                    slPart,
+                    slRel,
+                    false,
+                    true,
+                    (short)1,
+                    EMPTY_STRING,
+                    EMPTY_STRING,
+                    0);
+            for (Iterator iter = partList.iterator(); iter.hasNext();) {
+                Map mElement = (Map) iter.next();
+                mElement.put("hasChildren", "false");
+            }
+
+            return partList;
+    }
+    
+    public void createAttachmentFitPostProcess(Context context, String[] args) throws Exception {
+
+  		ContextUtil.startTransaction(context, true);
+  		logger.debug("Entering createAttachmentFitPostProcess");
+  		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+  	    HashMap requestMap = (HashMap) programMap.get("requestMap");
+  		HashMap paramMap = (HashMap) programMap.get("paramMap");
+
+  		String sBBId = (String) paramMap.get("objectId");
+
+  		String sAttachFitId= FrameworkUtil.autoName(context, "type_FYPLMFittingAttachments", "policy_FYPLMFittingAttachments");
+  		DomainObject objAttachFit = DomainObject.newInstance(context, sAttachFitId);
+
+  		DomainRelationship.connect(context, sBBId, RELATIONSHIP_FYPLM_BBXHQD_FITTING_ATTACHMENTS , sAttachFitId, true);
+  		logger.debug("connecting " + RELATIONSHIP_FYPLM_BBXHQD_FITTING_ATTACHMENTS);
+
+  		for(int i=1;i<=50;i++){
+  			String relatedConfig = (String) requestMap.get("topPart"+i);
+ 			if (relatedConfig !=null && !relatedConfig.equals("")){
+  				DomainRelationship.connect(context, sAttachFitId, RELATIONSHIP_FYPLM_ATTACHMENTS_FIT_TOP_PART, relatedConfig, true);
+  			} 
+  		}
+  		logger.debug("connecting " + RELATIONSHIP_FYPLM_ATTACHMENTS_FIT_TOP_PART);
+  		for(int i=1;i<=50;i++){
+  			String sAttach = (String) requestMap.get("attach"+i);
+  			if(sAttach!=null && !sAttach.equals("")){
+  				DomainObject objProcess = DomainObject.newInstance(context,sAttach);
+  				DomainRelationship rel = DomainRelationship.connect(context, objAttachFit, 
+  						RELATIONSHIP_FYPLM_ATTACHMENTS_FITTING_ATTACHMENT_PART, objProcess);
+  			} 
+  		}
+  		logger.debug("connecting " + RELATIONSHIP_FYPLM_ATTACHMENTS_FITTING_ATTACHMENT_PART);
+  		ContextUtil.commitTransaction(context);
+  	}
+      
+    public String getAttachmentCheckBox(Context context,String[] args) throws Exception{
+  		String str = "";
+  			HashMap programMap = (HashMap) JPO.unpackArgs(args);
+  			HashMap paramMap = (HashMap) programMap.get("paramMap");
+  			String objectId = (String) paramMap.get("objectId");
+
+  			DomainObject objBB = DomainObject.newInstance(context, objectId);
+  			StringList slObj = new StringList();
+  		    slObj.addElement(SELECT_ID);
+  		    slObj.addElement(SELECT_NAME);
+  		    StringList slRel = new StringList(SELECT_RELATIONSHIP_ID);
+  		    
+  	        MapList mlAttachmentMaterial = objBB.getRelatedObjects(context,
+  	        		RELATIONSHIP_FYPLM_BBXHQD_CLASSBMATERIALPART,
+  	        		"FYPLM Class B Material Part",
+  	                slObj,
+  	                slRel,
+  	                false,
+  	                true,
+  	                (short)1,
+  	                EMPTY_STRING,
+  	                EMPTY_STRING,
+  	                0);
+  			
+  			mlAttachmentMaterial.sort("name", "ascending", "string");
+  		    if (mlAttachmentMaterial.size() > 0) {
+  		    	int i=1;
+  		    	str += "<table border='0' cellspacing='0' cellpadding='0' ><tr>";
+    				for (Iterator iter = mlAttachmentMaterial.iterator(); iter.hasNext();) {
+        				Map process = (Map) iter.next();
+        				String processId = (String)process.get(SELECT_ID);
+        				
+        			    String processName = (String) process.get(SELECT_NAME);
+        			    processName = i18nNow.getRangeI18NString(TYPE_FYPLM_BB_STEP, processName, context.getSession().getLanguage());
+        			    	str += "<td height='40px' style='padding-left:10px;padding-right:10px;'><input type='checkbox' name='attach"+i+"' value='"+processId+"'/>"+processName+"</td>";
+            			    if(i%2==0){
+            			    	str += "</tr><tr>";
+            			    }
+            			    i++;
+
+          		}
+    				str += "</tr></table>";
+          	}
+          return str;
+      }
+    
+    public String getAttachFitTopPartValues(Context context,String[] args) throws Exception{
+		String str = "";
+		HashMap programMap = (HashMap) JPO.unpackArgs(args);
+		HashMap paramMap = (HashMap) programMap.get("paramMap");
+		String objectId = (String) paramMap.get("objectId");
+		
+		DomainObject objBB = DomainObject.newInstance(context, objectId);
+		HashMap relTopPartMap = new HashMap();
+		
+        StringList slObj = new StringList();
+        slObj.addElement(SELECT_ID);
+        slObj.addElement(SELECT_TYPE);
+        slObj.addElement(SELECT_NAME);
+
+        StringList slRel = new StringList(SELECT_RELATIONSHIP_ID);
+        MapList mapList = objBB.getRelatedObjects(context,
+        		RELATIONSHIP_FYPLM_BBXHQD_FITTING_ATTACHMENTS,
+                fyplmClxhqdConstants_mxJPO.TYPE_FYPLM_Fitting_Attachments,
+                slObj,
+                slRel,
+                false,
+                true,
+                (short)1,
+                EMPTY_STRING,
+                EMPTY_STRING,
+                0);
+        for (Iterator iter = mapList.iterator(); iter.hasNext();) {
+            Map mElement = (Map) iter.next();
+            String sAttachFit = (String)mElement.get(SELECT_ID);
+            DomainObject objAttachFit = DomainObject.newInstance(context, sAttachFit);
+            MapList topPartList = objAttachFit.getRelatedObjects(context,
+            		RELATIONSHIP_FYPLM_ATTACHMENTS_FIT_TOP_PART,
+            		TYPE_FYPLM_BB_TOP_PART,
+                    slObj,
+                    slRel,
+                    false,
+                    true,
+                    (short)1,
+                    EMPTY_STRING,
+                    EMPTY_STRING,
+                    0);
+            for (Iterator iter2 = topPartList.iterator(); iter2.hasNext();) {
+                Map topPartMap = (Map) iter2.next();
+                String topPartId = (String)topPartMap.get(SELECT_ID);
+                relTopPartMap.put(topPartId, topPartId);
+            }
+        }
+		StringList topPartSelect = new StringList();
+        topPartSelect.addElement(SELECT_ID);
+        topPartSelect.addElement(SELECT_NAME);
+        topPartSelect.addElement(SELECT_REVISION);
+        topPartSelect.addElement(SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
+        
+        StringList clxhqdTopPartRelList = new StringList();
+    		clxhqdTopPartRelList.addElement(SELECT_RELATIONSHIP_ID);
+
+	    MapList topPartList = objBB.getRelatedObjects(context,
+	    				RELATIONSHIP_FYPLM_BBXHQD_TOPPART,
+	    				TYPE_FYPLM_BB_TOP_PART,
+	                    topPartSelect,
+	                    clxhqdTopPartRelList,
+	                    false,
+	                    true,
+	                    (short) 1,
+	                    null,
+	                    null,
+	                    0);
+	    topPartList.sort("name", "ascending", "string");
+	    
+	    if (topPartList.size() > 0) {
+	    	int i=1;
+	    	str += "<table border='0' ><tr>";
+				for (Iterator iter = topPartList.iterator(); iter.hasNext();) {
+  				Map topPart = (Map) iter.next();
+  				String topPartId = (String)topPart.get(SELECT_ID);
+  				if(relTopPartMap.get(topPartId) != null){
+  					continue;
+  				}
+  			    String topPartName = (String) topPart.get(SELECT_ATTRIBUTE_FYPLM_CUSTOMER_PART_NUMBER);
+
+  			    String topPartRev = (String) topPart.get(SELECT_REVISION);
+  			    String topPartTitle = topPartName+" "+topPartRev;
+
+      	        str += "<td height='25px;' style='padding-right:20px;'><input type='checkbox' name='topPart"+i+"' value='"+topPartId+"'/>"+topPartTitle+"</td>";
+			    if(i%2==0){
+			    	str += "</tr><tr>";
+			    }
+			    i++;
+      	        
+    		}
+				str += "</tr></table>";
+    	}
+  return str;
+}
+    
     public void tecProcessAddStepPostProcess(Context context, String[] args) throws Exception {
 			ContextUtil.startTransaction(context, true);
 			HashMap programMap = (HashMap) JPO.unpackArgs(args);
@@ -130,7 +372,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                   String processId = (String)process.get(SELECT_ID);
                   tempMap.put(processId, processId);
               }
-  		    //System.out.println("tempMap===="+tempMap);
               String sWhere  = EMPTY_STRING;
   			MapList processList = findObjects(context,
   						TYPE_FYPLM_BB_STEP,
@@ -174,15 +415,10 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 
 		String tecProId= FrameworkUtil.autoName(context, "type_FYPLMTechnologicalProcess", "policy_FYPLMTechnologicalProcess");
 		DomainObject objTecPro = DomainObject.newInstance(context, tecProId);
-		System.out.println(sBBId);
-		System.out.println(RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS);
-		System.out.println(tecProId);
 		DomainRelationship.connect(context, sBBId, RELATIONSHIP_FYPLM_BBXHQD_TECHNOLOGICAL_PROCESS , tecProId, true);
 
 		for(int i=1;i<=100;i++){
 			String relatedConfig = (String) requestMap.get("topPart"+i);
-			
-			System.out.println(requestMap);
 			if (relatedConfig !=null && !relatedConfig.equals("")){
 				DomainRelationship.connect(context, tecProId, RELATIONSHIP_FYPLM_TECHNOLOGICAL_ROUTE_TOP_PART, relatedConfig, true);
 			} else {
@@ -203,7 +439,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 	}
     
     public String getProductFeature(Context context, String[] args) throws Exception{
-    	System.out.println("Entering getProductFeature : ");
     	Map programMap = (Map) JPO.unpackArgs(args);
         HashMap requestMap = (HashMap) programMap.get("requestMap");
         
@@ -383,7 +618,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
                  0);
 	    if(mapList!=null && mapList.size()>0){
 	    	Map lpMap = (Map)mapList.get(0);
-	        System.out.println("lpMap.size()=================================="+lpMap);
 	    	String lpId = (String)lpMap.get(DomainObject.SELECT_ID); 	
 	    	DomainObject objLp = DomainObject.newInstance(context, lpId);
 	    	String sSelect = new StringBuilder(ABEGIN)
@@ -406,7 +640,6 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
 		    	sProductionPlace = (String)((Map)mlBMs.get(0)).get(sSelect);
 	    	}
 	    	  
-            System.out.println(sProductionPlace);
 	    }
 
         String sLanguage = context.getSession().getLanguage();
@@ -414,15 +647,10 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
          AttributeType atrProductionType = new AttributeType(ATTRIBUTE_FYPLM_PRODUCTION_TYPE);
          atrProductionType.open(context);
          StringList strList = atrProductionType.getChoices(context);
-         System.out.println("ATTRIBUTE_FYPLM_MASTER_DEVICE========"+ATTRIBUTE_FYPLM_PRODUCTION_TYPE);
-         System.out.println("strList========"+strList);
          strList.sort();
          atrProductionType.close(context);
          for(int i=0; i<strList.size();i++){
              String key = (String)strList.get(i);
-             
-             System.out.println(key);
-             
              String value = i18nNow.getRangeI18NString(ATTRIBUTE_FYPLM_PRODUCTION_TYPE, key, sLanguage);
              String startKey = "";
              
@@ -574,18 +802,8 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             settingMap.put("Registered Suite", "Framework");
             settingMap.put("function", "getNetUsageColumn");
             settingMap.put("program", "fyplmBBXHQD");
-            //settingMap.put("Style Program", "cqacBOMProduct");)
-            //settingMap.put("Style Function", "getdynamicbackground");)
-            //settingMap.put("Column Style", "center-align");)
-            //settingMap.put("Width", customWidth);
-            //settingMap.put("Export", "true");)
             if(modeStr==null || modeStr.isEmpty()) {
                     settingMap.put("Editable", "true");
-                    //settingMap.put("Edit Access Program", "cqacBOMProdu");
-                    //settingMap.put("Edit Access Function", "editacess");
-                    //settingMap.put("On Change Handler", "validatePELValue");
-                    //settingMap.put("Range Function","getRangeValuesForDynamicColumn");
-                    //settingMap.put("Range Program", "cqacBOMProduct");
                     settingMap.put("Update Function", "updateNetUsage");
                     settingMap.put("Update Program", "fyplmBBXHQD");
                     settingMap.put("Input Type", "textbox");
@@ -609,18 +827,8 @@ public class fyplmBBXHQD_mxJPO extends DomainObject{
             settingMap2.put("Registered Suite", "Framework");
             settingMap2.put("function", "getGrossUsageColumn");
             settingMap2.put("program", "fyplmBBXHQD");
-            //settingMap2.put("Style Program", "cqacBOMProduct");)
-            //settingMap2.put("Style Function", "getdynamicbackground");)
-            //settingMap2.put("Column Style", "center-align");)
-            //settingMap2.put("Width", customWidth);
-            //settingMap2.put("Export", "true");)
             if(modeStr==null || modeStr.isEmpty()) {
                     settingMap2.put("Editable", "true");
-                    //settingMap2.put("Edit Access Program", "cqacBOMProdu");
-                    //settingMap2.put("Edit Access Function", "editacess");
-                    //settingMap2.put("On Change Handler", "validatePELValue");
-                    //settingMap2.put("Range Function","getRangeValuesForDynamicColumn");
-                    //settingMap2.put("Range Program", "cqacBOMProduct");
                     settingMap2.put("Update Function", "updateGrossUsage");
                     settingMap2.put("Update Program", "fyplmBBXHQD");
                     settingMap2.put("Input Type", "textbox");
